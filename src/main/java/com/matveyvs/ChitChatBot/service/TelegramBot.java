@@ -98,6 +98,13 @@ public class TelegramBot extends TelegramLongPollingBot {
                                 }
                             }
                             case ADMINHELP -> sendMessage(chatId, getAdminHelpMessage());
+                            case EXIT -> {
+                                sendMessage(chatId, "You're in main menu press /help " +
+                                        "to get possible messages");
+                                admins.remove(chatId);
+                                // not to get password message after remove admin
+                                passwordMessage = false;
+                            }
                         }
                     }
                     case USER -> {
@@ -137,6 +144,7 @@ public class TelegramBot extends TelegramLongPollingBot {
                 /listofadmins - show all admins that register in system
                 /listofusers - show all users that have accees to system
                 /adminhelp - all possible commands for admin
+                /exit - exit to main menu
                 /help - to get access to""";
     }
 

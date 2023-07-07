@@ -11,5 +11,6 @@ public enum TGCommands {
     USERHELP,
     LISTOFADMINS,
     LISTOFUSERS,
+    EXIT,
     HELP
 }
