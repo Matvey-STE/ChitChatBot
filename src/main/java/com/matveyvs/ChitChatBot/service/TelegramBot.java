@@ -15,12 +15,13 @@ import java.util.*;
 @Component //create instance of class automatically
 public class TelegramBot extends TelegramLongPollingBot {
     final BotConfig botConfig;
+    private final StaticMessages staticMessages;
     public boolean passwordMessage = false;
     public static Map<Long,String> admins = new HashMap<>();
     public static Set<String> users = new HashSet<>();
-
-    public TelegramBot(BotConfig botConfig) {
+    public TelegramBot(BotConfig botConfig, StaticMessages staticMessages) {
         this.botConfig = botConfig;
+        this.staticMessages = staticMessages;
     }
     @Override
     public String getBotUsername() {
@@ -51,9 +52,9 @@ public class TelegramBot extends TelegramLongPollingBot {
                 System.out.println("user access");
             } else {
                 registerCondition = Condition.UNREGISTERED;
+                System.out.println(staticMessages.getHelpMessage());
                 System.out.println("no access");
             }
-
             //menu based on condition
             try{
             switch (registerCondition){
@@ -79,7 +80,7 @@ public class TelegramBot extends TelegramLongPollingBot {
                                     passwordMessage = true;
                                 }
                                 case USER -> sendMessage(chatId, "Please ask admin to give you access to this bot");
-                                case HELP -> sendMessage(chatId, getHelpMessage());
+                                case HELP -> sendMessage(chatId, staticMessages.getHelpMessage());
                                 default -> sendMessage(chatId, "Unsupported message, use /help");
                             }
                         }
@@ -108,7 +109,7 @@ public class TelegramBot extends TelegramLongPollingBot {
                                         printUsers(chatId, users);
                                     }
                                 }
-                                case ADMINHELP -> sendMessage(chatId, getAdminHelpMessage());
+                                case ADMINHELP -> sendMessage(chatId, staticMessages.getAdminHelpMessage());
                                 case EXIT -> {
                                     sendMessage(chatId, "You're in main menu press /help " +
                                             "to get possible messages");
@@ -116,7 +117,7 @@ public class TelegramBot extends TelegramLongPollingBot {
                                     // not to get password message after remove admin
                                     passwordMessage = false;
                                 }
-                                default -> sendMessage(chatId,getUnsupportedMessage());
+                                default -> sendMessage(chatId, staticMessages.getUnsupportedMessage());
                             }
                         }
                     }
@@ -124,16 +125,16 @@ public class TelegramBot extends TelegramLongPollingBot {
                         sendMessage(chatId, "Hello user possible commands here /userhelp and /help");
                         switch (getTgCommands(text)) {
                             case USERHELP -> sendMessage(chatId, "User help message");
-                            case HELP -> sendMessage(chatId, getHelpMessage());
-                            default -> sendMessage(chatId, getUnsupportedMessage());
+                            case CHOOSETHETASK -> sendMessage(chatId, "User help message");
+                            default -> sendMessage(chatId, staticMessages.getUnsupportedMessage());
                         }
                     }
                 }
             } catch (Exception e) {
-                sendMessage(chatId, getUnsupportedMessage());
+                sendMessage(chatId, staticMessages.getUnsupportedMessage());
             }
         } else {
-            sendMessage(chatId, getUnsupportedMessage());
+            sendMessage(chatId, staticMessages.getUnsupportedMessage());
         }
     }
 
@@ -141,29 +142,8 @@ public class TelegramBot extends TelegramLongPollingBot {
     private static TGCommands getTgCommands(String command){
         return TGCommands.valueOf(command.substring(1).toUpperCase());
     }
-    //create help message
-    private static String getHelpMessage(){
-        return """
-                This bot using for learning new thigs
-                /start - starting message, not workin if you're /admin or /user
-                /admin - to get rights you should know the password
-                /user - admin can give the access for this bot
-                /help - general information for this bot""";
-    }
-    private static String getAdminHelpMessage(){
-        return """
-                Hello admin possible commands are
-                /createuser - add new user to system
-                /deleteuser - delete user from system
-                /listofadmins - show all admins that register in system
-                /listofusers - show all users that have accees to system
-                /adminhelp - all possible commands for admin
-                /exit - exit to main menu
-                /help - to get access to""";
-    }
-    private static String getUnsupportedMessage(){
-        return "Unsupported message, use /help";
-    }
+
+
     private boolean isAdmin (Long chatId){
         return admins.containsKey(chatId);
     }
