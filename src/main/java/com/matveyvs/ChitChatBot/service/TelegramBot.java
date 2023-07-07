@@ -116,6 +116,7 @@ public class TelegramBot extends TelegramLongPollingBot {
                                     // not to get password message after remove admin
                                     passwordMessage = false;
                                 }
+                                default -> sendMessage(chatId,getUnsupportedMessage());
                             }
                         }
                     }
@@ -124,14 +125,15 @@ public class TelegramBot extends TelegramLongPollingBot {
                         switch (getTgCommands(text)) {
                             case USERHELP -> sendMessage(chatId, "User help message");
                             case HELP -> sendMessage(chatId, getHelpMessage());
+                            default -> sendMessage(chatId, getUnsupportedMessage());
                         }
                     }
                 }
             } catch (Exception e) {
-                sendMessage(chatId, "Unknown command, use /help to find the right one");
+                sendMessage(chatId, getUnsupportedMessage());
             }
         } else {
-            sendMessage(chatId, "Unsupported message, use /help");
+            sendMessage(chatId, getUnsupportedMessage());
         }
     }
 
@@ -158,6 +160,9 @@ public class TelegramBot extends TelegramLongPollingBot {
                 /adminhelp - all possible commands for admin
                 /exit - exit to main menu
                 /help - to get access to""";
+    }
+    private static String getUnsupportedMessage(){
+        return "Unsupported message, use /help";
     }
     private boolean isAdmin (Long chatId){
         return admins.containsKey(chatId);
