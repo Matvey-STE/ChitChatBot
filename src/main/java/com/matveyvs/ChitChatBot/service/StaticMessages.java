@@ -3,17 +3,22 @@ package com.matveyvs.ChitChatBot.service;
 import org.springframework.stereotype.Component;
 @Component
 public class StaticMessages {
-
     public String getAdminHelpMessage() {
         return """
-                Hello admin, possible commands are:
+                Hello ADMIN, possible commands are:
                 /createuser - add new user to the system
                 /deleteuser - delete a user from the system
                 /listofadmins - show all admins registered in the system
                 /listofusers - show all users with access to the system
                 /adminhelp - list all possible commands for admin
-                /exit - exit to the main menu
-                /help - get access to help""";
+                /exit - exit to the main menu""";
+    }
+    public String getUserHelpMessage() {
+        return """
+                Hello USER, possible commands are:
+                /choosetask - add new user to the system
+                /userhelp - list all possible commands for user
+                /exit - exit to the main menu""";
     }
     public String getHelpMessage() {
         return """
@@ -23,6 +28,7 @@ public class StaticMessages {
                 /user - admins can give access to this bot
                 /help - general information for this bot""";
     }
+
     public String getUnsupportedMessage(){
         return "Unsupported message, use /help";
     }

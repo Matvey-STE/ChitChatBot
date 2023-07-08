@@ -44,15 +44,14 @@ public class TelegramBot extends TelegramLongPollingBot {
             //condition check // todo add feature to using tg bot for admin and not to lose his username
             // 0 - for no accept, 1 - for admins, 2 - for users;
             Condition registerCondition;
-            if (isAdmin(chatId)){
-                registerCondition = Condition.ADMIN;
-                System.out.println("admin access");
-            } else if (isUser(nameOfUser)){
+            if (isUser(nameOfUser)){
                 registerCondition = Condition.USER;
                 System.out.println("user access");
+            } else if (isAdmin(chatId)){
+                registerCondition = Condition.ADMIN;
+                System.out.println("admin access");
             } else {
                 registerCondition = Condition.UNREGISTERED;
-                System.out.println(staticMessages.getHelpMessage());
                 System.out.println("no access");
             }
             //menu based on condition
@@ -66,7 +65,7 @@ public class TelegramBot extends TelegramLongPollingBot {
                             passwordMessage = false;
                         } else if (passwordMessage) {
                             passwordMessage = false;
-                            sendMessage(chatId, "Password was wrong, please user /help to choose the right command!");
+                            sendMessage(chatId, "Password was wrong, please use /help to choose the right command!");
                         } else {
                             switch (getTgCommands(text)) {
                                 case START -> {
@@ -79,7 +78,7 @@ public class TelegramBot extends TelegramLongPollingBot {
                                     sendMessage(chatId, "Please write password");
                                     passwordMessage = true;
                                 }
-                                case USER -> sendMessage(chatId, "Please ask admin to give you access to this bot");
+                                case USER -> sendMessage(chatId, "Please ask ADMIN to give you access to this bot");
                                 case HELP -> sendMessage(chatId, staticMessages.getHelpMessage());
                                 default -> sendMessage(chatId, "Unsupported message, use /help");
                             }
@@ -88,7 +87,12 @@ public class TelegramBot extends TelegramLongPollingBot {
                     case ADMIN -> {
                             if (passwordMessage && admins.containsKey(chatId)){
                                 users.add(text);
-                                sendMessage(chatId, "User with the name " + text + " has been added to system");
+                                if (users.contains(nameOfUser)){
+                                    sendMessage(chatId, "Hello, " + nameOfUser + " you're in USER MENU" +
+                                            " now, please use /userhelp");
+                                } else {
+                                    sendMessage(chatId, "User with the name " + text + " has been added to system");
+                                }
                                 passwordMessage = false;
                             } else {
                             switch (getTgCommands(text)) {
@@ -113,7 +117,6 @@ public class TelegramBot extends TelegramLongPollingBot {
                                 case EXIT -> {
                                     sendMessage(chatId, "You're in main menu press /help " +
                                             "to get possible messages");
-                                    admins.remove(chatId);
                                     // not to get password message after remove admin
                                     passwordMessage = false;
                                 }
@@ -122,10 +125,17 @@ public class TelegramBot extends TelegramLongPollingBot {
                         }
                     }
                     case USER -> {
-                        sendMessage(chatId, "Hello user possible commands here /userhelp and /help");
                         switch (getTgCommands(text)) {
-                            case USERHELP -> sendMessage(chatId, "User help message");
-                            case CHOOSETHETASK -> sendMessage(chatId, "User help message");
+                            case USERHELP -> sendMessage(chatId, staticMessages.getUserHelpMessage());
+                            case CHOOSETASK -> sendMessage(chatId, "User CAN CHOOSE TASK HERE");
+                            case EXIT -> {
+                               if (!admins.containsKey(chatId)){
+                                   sendMessage(chatId, "You can't exit from this menu, only for ADMINS");
+                               } else {
+                                   sendMessage(chatId, "Hello ADMIN now you're in ADMIN menu, please use /adminhelp");
+                                   users.remove(nameOfUser);
+                               }
+                            }
                             default -> sendMessage(chatId, staticMessages.getUnsupportedMessage());
                         }
                     }
