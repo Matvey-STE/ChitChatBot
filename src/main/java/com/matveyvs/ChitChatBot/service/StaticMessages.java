@@ -30,7 +30,7 @@ public class StaticMessages {
     }
 
     public String getUnsupportedMessage(){
-        return "Unsupported message, use /help";
+        return "Unsupported message, use ";
     }
 
 }
