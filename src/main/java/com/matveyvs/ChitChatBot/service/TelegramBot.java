@@ -57,19 +57,19 @@ public class TelegramBot extends TelegramLongPollingBot {
                 registerCondition = Condition.UNREGISTERED;
                 System.out.println("no access");
             }
-            //menu based on condition
-            try {
-                switch (registerCondition) {
-                    case UNREGISTERED -> {
-                        if (passwordMessage && text.equals(botConfig.getAdminPassword()) && !admins.containsKey(chatId)) {
-                            sendMessage(chatId, "Now you have access to this bot as admin please use /adminhelp " +
-                                    "to get all possible commands");
-                            admins.put(chatId, update.getMessage().getChat().getUserName());
-                            passwordMessage = false;
-                        } else if (passwordMessage) {
-                            passwordMessage = false;
-                            sendMessage(chatId, "Password was wrong, please use /help to choose the right command!");
-                        } else {
+
+            switch (registerCondition) {
+                case UNREGISTERED -> {
+                    if (passwordMessage && text.equals(botConfig.getAdminPassword()) && !admins.containsKey(chatId)) {
+                        sendMessage(chatId, "Now you have access to this bot as admin please use /adminhelp " +
+                                "to get all possible commands");
+                        admins.put(chatId, update.getMessage().getChat().getUserName());
+                        passwordMessage = false;
+                    } else if (passwordMessage) {
+                        passwordMessage = false;
+                        sendMessage(chatId, "Password was wrong, please use /help to choose the right command!");
+                    } else {
+                        if (isEnumValueInList(text, getListOfPossibleCommands())) {
                             switch (getTgCommands(text)) {
                                 case START -> {
                                     sendMessage(chatId, "Hello " + name + "  you're unregister user.\n" +
@@ -83,80 +83,79 @@ public class TelegramBot extends TelegramLongPollingBot {
                                 }
                                 case USER -> sendMessage(chatId, "Please ask ADMIN to give you access to this bot");
                                 case HELP -> sendMessage(chatId, staticMessages.getHelpMessage());
-                                default -> sendMessage(chatId, "Unsupported message, use /help");
-                            }
-                        }
-                    }
-                    case ADMIN -> {
-                        if (passwordMessage && admins.containsKey(chatId)) {
-                            users.add(text);
-                            if (users.contains(nameOfUser)) {
-                                sendMessage(chatId, "Hello, " + nameOfUser + " you're in USER MENU" +
-                                        " now, please use /userhelp");
-                            } else {
-                                sendMessage(chatId, "User with the name " + text + " has been added to system");
-                            }
-                            passwordMessage = false;
-                        } else {
-                            if (isEnumValueInListOfEnums(text, getListOfPossibleCommands())) {
-                                switch (getTgCommands(text)) {
-                                    case CREATEUSER -> {
-                                        sendMessage(chatId, "Please write user name");
-                                        passwordMessage = true;
-                                    }
-                                    case DELETEUSER -> sendMessage(chatId, "Delete user here");
-                                    case LISTOFADMINS -> {
-                                        sendMessage(chatId, "The list of ADMINS now:");
-                                        printAdmins(chatId, admins);
-                                    }
-                                    case LISTOFUSERS -> {
-                                        if (users.isEmpty()) {
-                                            sendMessage(chatId, "There is no possible users now");
-                                        } else {
-                                            sendMessage(chatId, "The list of USERS now:");
-                                            printUsers(chatId, users);
-                                        }
-                                    }
-                                    case ADMINHELP -> sendMessage(chatId, staticMessages.getAdminHelpMessage());
-                                    case EXIT -> {
-                                        sendMessage(chatId, "You're in main menu press /help " +
-                                                "to get possible messages");
-                                        // not to get password message after remove admin
-                                        passwordMessage = false;
-                                    }
-                                    default ->
-                                            sendMessage(chatId, staticMessages.getUnsupportedMessage() + "/adminhelp");
-                                }
-                            }
-                        }
-                    }
-                    case USER -> {
-                        if (isEnumValueInListOfEnums(text, getListOfPossibleCommands())) {
-                            switch (getTgCommands(text)) {
-                                case USERHELP -> sendMessage(chatId, staticMessages.getUserHelpMessage());
-                                case CHOOSETASK -> sendMessage(chatId, "User CAN CHOOSE TASK HERE");
-                                case EXIT -> {
-                                    if (!admins.containsKey(chatId)) {
-                                        sendMessage(chatId, "You can't exit from this menu, only for ADMINS");
-                                    } else {
-                                        sendMessage(chatId, "Hello ADMIN now you're in ADMIN menu, please use /adminhelp");
-                                        users.remove(nameOfUser);
-                                    }
-                                }
-                                default -> sendMessage(chatId, staticMessages.getUnsupportedMessage() + "/userhelp");
+                                default -> sendMessage(chatId, staticMessages.getUnsupportedMessage() + "/help");
                             }
                         } else {
-                            sendMessage(chatId, staticMessages.getUnsupportedMessage() + "/userhelp");
+                            sendMessage(chatId, staticMessages.getUnsupportedMessage() + "/help");
                         }
                     }
                 }
-            } catch (Exception e) {
-                sendMessage(chatId, staticMessages.getUnsupportedMessage() + "/help");
-                System.out.println("Message from CATCH");
+                case ADMIN -> {
+                    if (passwordMessage && admins.containsKey(chatId)) {
+                        users.add(text);
+                        if (users.contains(nameOfUser)) {
+                            sendMessage(chatId, "Hello, " + nameOfUser + " you're in USER MENU" +
+                                    " now, please use /userhelp");
+                        } else {
+                            sendMessage(chatId, "User with the name " + text + " has been added to system");
+                        }
+                        passwordMessage = false;
+                    } else {
+                        if (isEnumValueInList(text, getListOfPossibleCommands())) {
+                            switch (getTgCommands(text)) {
+                                case CREATEUSER -> {
+                                    sendMessage(chatId, "Please write user name");
+                                    passwordMessage = true;
+                                }
+                                case DELETEUSER -> sendMessage(chatId, "Delete user here");
+                                case LISTOFADMINS -> {
+                                    sendMessage(chatId, "The list of ADMINS now:");
+                                    printAdmins(chatId, admins);
+                                }
+                                case LISTOFUSERS -> {
+                                    if (users.isEmpty()) {
+                                        sendMessage(chatId, "There is no possible users now");
+                                    } else {
+                                        sendMessage(chatId, "The list of USERS now:");
+                                        printUsers(chatId, users);
+                                    }
+                                }
+                                case ADMINHELP -> sendMessage(chatId, staticMessages.getAdminHelpMessage());
+                                case EXIT -> {
+                                    sendMessage(chatId, "You're in main menu press /help " +
+                                            "to get possible messages");
+                                    // not to get password message after remove admin
+                                    passwordMessage = false;
+                                }
+                                default -> sendMessage(chatId, staticMessages.getUnsupportedMessage() + "/adminhelp");
+                            }
+                        } else {
+                            sendMessage(chatId, staticMessages.getUnsupportedMessage() + "/adminhelp");
+                        }
+                    }
+                }
+                case USER -> {
+                    if (isEnumValueInList(text, getListOfPossibleCommands())) {
+                        switch (getTgCommands(text)) {
+                            case USERHELP -> sendMessage(chatId, staticMessages.getUserHelpMessage());
+                            case CHOOSETASK -> sendMessage(chatId, "User CAN CHOOSE TASK HERE");
+                            case EXIT -> {
+                                if (!admins.containsKey(chatId)) {
+                                    sendMessage(chatId, "You can't exit from this menu, only for ADMINS");
+                                } else {
+                                    sendMessage(chatId, "Hello ADMIN now you're in ADMIN menu, please use /adminhelp");
+                                    users.remove(nameOfUser);
+                                }
+                            }
+                            default -> sendMessage(chatId, staticMessages.getUnsupportedMessage() + "/userhelp");
+                        }
+                    } else {
+                        sendMessage(chatId, staticMessages.getUnsupportedMessage() + "/userhelp");
+                    }
+                }
             }
         } else {
             sendMessage(chatId, staticMessages.getUnsupportedMessage() + "/help");
-            System.out.println("message from ELSE");
         }
     }
 
@@ -195,7 +194,8 @@ public class TelegramBot extends TelegramLongPollingBot {
     private void printUsers(Long chatId, Set<String> people) {
         people.forEach(e -> sendMessage(chatId, e));
     }
-
+    // todo probably create enums for each condition like USER, ADMIN, UNREGISTERED
+    // todo or check it earlier
     public static List<String> getListOfPossibleCommands() {
         List<String> strings = new ArrayList<>();
         for (TGCommands command : TGCommands.values()) {
@@ -203,9 +203,7 @@ public class TelegramBot extends TelegramLongPollingBot {
         }
         return strings;
     }
-
-    // todo probably create enums for each condition like USER, ADMIN, UNREGISTERED
-    public static boolean isEnumValueInListOfEnums(String text, List<String> enumList) {
+    public static boolean isEnumValueInList(String text, List<String> enumList) {
         String result = text.substring(1).toUpperCase();
         return enumList.contains(result);
     }
