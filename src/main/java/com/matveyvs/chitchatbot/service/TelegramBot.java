@@ -1,8 +1,8 @@
-package com.matveyvs.ChitChatBot.service;
+package com.matveyvs.chitchatbot.service;
 
-import com.matveyvs.ChitChatBot.config.BotConfig;
-import com.matveyvs.ChitChatBot.service.enums.Condition;
-import com.matveyvs.ChitChatBot.service.enums.TGCommands;
+import com.matveyvs.chitchatbot.config.BotConfig;
+import com.matveyvs.chitchatbot.service.enums.Condition;
+import com.matveyvs.chitchatbot.service.enums.TGCommands;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;

@@ -1,4 +1,4 @@
-package com.matveyvs.ChitChatBot.service.enums;
+package com.matveyvs.chitchatbot.service.enums;
 
 public enum TGCommands {
     START,

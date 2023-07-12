@@ -1,6 +1,6 @@
-package com.matveyvs.ChitChatBot.config;
+package com.matveyvs.chitchatbot.config;
 
-import com.matveyvs.ChitChatBot.service.TelegramBot;
+import com.matveyvs.chitchatbot.service.TelegramBot;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.context.event.EventListener;

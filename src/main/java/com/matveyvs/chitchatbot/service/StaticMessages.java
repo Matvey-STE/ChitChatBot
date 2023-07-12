@@ -1,8 +1,9 @@
-package com.matveyvs.ChitChatBot.service;
+package com.matveyvs.chitchatbot.service;
 
 import org.springframework.stereotype.Component;
 @Component
 public class StaticMessages {
+
     public String getAdminHelpMessage() {
         return """
                 Hello ADMIN, possible commands are:
