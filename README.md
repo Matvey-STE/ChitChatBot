@@ -1,7 +1,6 @@
-
-<p align="center">
+<div style="text-align: center;">
   <span style="color: blue; font-weight: bold; font-size: larger;">ChitChatBot</span>
-</p>
+</div>
 
 Telegram bot that helps English teacher to send tasks to students.
 
