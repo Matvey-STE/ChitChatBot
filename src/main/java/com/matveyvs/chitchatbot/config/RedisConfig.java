@@ -1,6 +1,5 @@
 package com.matveyvs.chitchatbot.config;
 
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
 import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
@@ -10,7 +9,7 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 @Configuration
 public class RedisConfig {
-    @Bean
+//    @Bean
     public JedisConnectionFactory jedisConnectionFactory(){
         RedisStandaloneConfiguration redisStandaloneConfiguration = new RedisStandaloneConfiguration();
         redisStandaloneConfiguration.setHostName("localhost");
@@ -19,7 +18,7 @@ public class RedisConfig {
 //        return new JedisConnectionFactory(redisStandaloneConfiguration);
         return null;
     }
-    @Bean
+//    @Bean
     public RedisTemplate<String, Object> redisTemplate(){
         RedisTemplate<String,Object> template = new RedisTemplate<>();
 
