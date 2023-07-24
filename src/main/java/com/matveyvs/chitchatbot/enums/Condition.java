@@ -1,4 +1,4 @@
-package com.matveyvs.chitchatbot.service.enums;
+package com.matveyvs.chitchatbot.enums;
 
 public enum Condition {
     UNREGISTERED,
