@@ -24,4 +24,18 @@ public class UserEntity extends AbstractClassEntity{
     private String languageCode;
     @Column(name = "state_id")
     private Integer stateId;
+
+    @Override
+    public String toString() {
+        return "UserEntity{" +
+                "chatId=" + chatId +
+                ", firstName='" + firstName + '\'' +
+                ", secondName='" + secondName + '\'' +
+                ", userName='" + userName + '\'' +
+                ", languageCode='" + languageCode + '\'' +
+                ", stateId=" + stateId +
+                '}';
+    }
 }
+
+

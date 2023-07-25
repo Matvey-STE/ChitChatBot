@@ -44,8 +44,6 @@ public class WebHookBotConfig extends TelegramWebhookBot {
             String nameOfUser = message.getChat().getUserName();
             Chat chat = message.getChat();
 
-            sendMessage(replyMessageService.getReplyMessage(chatId, "reply.hello"));
-
             if (update.hasMessage() && update.getMessage().hasText()) {
                 String text = message.getText();
                 String name = update.getMessage().getChat().getFirstName();
