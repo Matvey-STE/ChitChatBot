@@ -1,10 +1,13 @@
 package com.matveyvs.chitchatbot.botapi;
 
+import com.matveyvs.chitchatbot.botapi.callbackquery.CallbackQueryFacade;
 import com.matveyvs.chitchatbot.cache.UserDataCache;
 import com.matveyvs.chitchatbot.entity.UserEntity;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
+import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
+import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
@@ -13,14 +16,27 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 public class TelegramFacade {
     private final BotStateContext botStateContext;
     private final UserDataCache userDataCache;
+    private final CallbackQueryFacade callbackQueryFacade;
 
-    public TelegramFacade(BotStateContext botStateContext, UserDataCache userDataCache) {
+    public TelegramFacade(BotStateContext botStateContext, UserDataCache userDataCache, CallbackQueryFacade callbackQueryFacade) {
         this.botStateContext = botStateContext;
         this.userDataCache = userDataCache;
+        this.callbackQueryFacade = callbackQueryFacade;
     }
 
-    public SendMessage handleUpdate (Update update){
+    public BotApiMethod<?> handleUpdate (Update update){
         SendMessage replyMessage = null;
+
+        if (update.hasCallbackQuery()){
+            CallbackQuery callbackQuery = update.getCallbackQuery();
+            log.info("New CallbackQuery from: {} with data: {}",
+                    update.getCallbackQuery().getFrom().getUserName(),
+                    update.getCallbackQuery().getData());
+
+            replyMessage = callbackQueryFacade.processCallBackQuery(callbackQuery);
+            return replyMessage;
+        }
+
         Message message = update.getMessage();
         if (message != null && message.hasText()){
             log.info("New message from user: {}, chat id: {}, with text: {}",
@@ -50,6 +66,7 @@ public class TelegramFacade {
         }
         return reply;
     }
+
     private BotState getUserStateByMessage(Message message) {
         Long chatId = message.getChatId();
         BotState botState;
@@ -62,7 +79,7 @@ public class TelegramFacade {
             default -> {
                 UserEntity userEntity = userDataCache.getUserByIdFromCache(chatId);
                 if (userEntity == null) {
-                    botState = BotState.NONE;
+                    botState = BotState.START_MESSAGE;
                 } else {
                     botState = userDataCache.getUserByIdFromCache(chatId) != null ? BotState.getValueByInteger(userEntity.getStateId()) : BotState.NONE;
                 }
@@ -70,4 +87,16 @@ public class TelegramFacade {
         }
         return botState;
     }
+    //todo testing callback query
+/*    private BotApiMethod<?> processCallBackQuery(CallbackQuery buttonQuery) {
+        String chatId = buttonQuery.getMessage().getChatId().toString();
+        Integer callBackQueryIdMessage = buttonQuery.getMessage().getMessageId();
+        BotApiMethod<?> callbackAnswer = null;
+        if (buttonQuery.getData().equals("admin")){
+            webHookBotService.editMessage(chatId, callBackQueryIdMessage, "Hello my friend ADMIN");
+        } else if (buttonQuery.getData().equals("user")){
+            webHookBotService.deleteMessage(chatId, callBackQueryIdMessage);
+        }
+        return null;
+    }*/
 }

@@ -26,4 +26,7 @@ public class ReplyMessageService {
     public void setLocaleMessageService(String localeTag) {
         localeMessageService.setLocale(Locale.forLanguageTag(localeTag));
     }
+    public String getReplyText(String replyMessage){
+        return localeMessageService.getMessage(replyMessage);
+    }
 }

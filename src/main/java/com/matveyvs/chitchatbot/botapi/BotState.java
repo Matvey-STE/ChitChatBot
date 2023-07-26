@@ -1,6 +1,8 @@
 package com.matveyvs.chitchatbot.botapi;
 
 public enum BotState {
+    NONE,
+
     START_MESSAGE,
     ADMIN_PASSWORD,
 
@@ -16,8 +18,7 @@ public enum BotState {
     HELP,
 
     ADMIN_HELP,
-    USER_HELP,
-    NONE;
+    USER_HELP;
     //method that return BotState by Integer
     public static BotState getValueByInteger(int botState) {
         for (BotState state : BotState.values()) {

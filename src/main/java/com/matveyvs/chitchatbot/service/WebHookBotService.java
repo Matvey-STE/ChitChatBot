@@ -1,16 +1,16 @@
-package com.matveyvs.chitchatbot;
+package com.matveyvs.chitchatbot.service;
 
 import com.matveyvs.chitchatbot.entity.UserEntity;
 import com.matveyvs.chitchatbot.enums.Condition;
 import com.matveyvs.chitchatbot.enums.TGCommands;
-import com.matveyvs.chitchatbot.service.ReplyMessageService;
-import com.matveyvs.chitchatbot.service.UserService;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.telegram.telegrambots.bots.TelegramWebhookBot;
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
+import org.telegram.telegrambots.meta.api.methods.updatingmessages.DeleteMessage;
+import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageText;
 import org.telegram.telegrambots.meta.api.objects.Chat;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
@@ -18,7 +18,7 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 import java.util.*;
 @Log4j2
-public class WebHookBotConfig extends TelegramWebhookBot {
+public class WebHookBotService extends TelegramWebhookBot {
     @Autowired
     private UserService userService;
     @Autowired
@@ -32,7 +32,7 @@ public class WebHookBotConfig extends TelegramWebhookBot {
     public static Map<Long, String> admins = new HashMap<>();
     public static Set<String> users = new HashSet<>();
 
-    public WebHookBotConfig() {
+    public WebHookBotService() {
         System.out.println("Create instance of ChitChatBot");
     }
 
@@ -99,7 +99,7 @@ public class WebHookBotConfig extends TelegramWebhookBot {
                         UserEntity userEntity = userService.findUserById(chatId);
                         if (userEntity == null){
                             userEntity = new UserEntity(chatId,chat.getFirstName(),chat.getLastName(), chat.getUserName(),
-                            "en-UK", 1);
+                            "en-UK",false,false,0);
                             log.info("Add new user: chat_id : {} firstname : {} last name : {} user name : {}  ln code {} ",
                                     chatId, chat.getFirstName(),chat.getLastName(),chat.getUserName(), userEntity.getLanguageCode());
                             userService.saveUser(userEntity);
@@ -178,8 +178,6 @@ public class WebHookBotConfig extends TelegramWebhookBot {
     private static TGCommands getTgCommands(String command) {
         return TGCommands.valueOf(command.substring(1).toUpperCase());
     }
-
-
     private boolean isAdmin(Long chatId) {
         return admins.containsKey(chatId);
     }
@@ -229,6 +227,31 @@ public class WebHookBotConfig extends TelegramWebhookBot {
         String result = text.substring(1).toUpperCase();
         return enumList.contains(result);
     }
+
+    public void editMessage(String chat_id, Integer messageID, String textMessage) {
+        EditMessageText editMessageText = new EditMessageText();
+        editMessageText.setChatId(chat_id);
+        editMessageText.setMessageId(messageID);
+        editMessageText.enableHtml(true);
+        editMessageText.setText(textMessage);
+        try {
+            execute(editMessageText);
+        } catch (TelegramApiException e) {
+            throw new RuntimeException(e);
+        }
+
+    }
+    public void deleteMessage(String chat_id, Integer messageId){
+        DeleteMessage deleteMessage = new DeleteMessage();
+        deleteMessage.setMessageId(messageId);
+        deleteMessage.setChatId(chat_id);
+        try {
+            execute(deleteMessage);
+        } catch (TelegramApiException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
 
 
 

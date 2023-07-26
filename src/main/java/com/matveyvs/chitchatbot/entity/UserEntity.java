@@ -22,17 +22,19 @@ public class UserEntity extends AbstractClassEntity{
     @Column(unique = true)
     private String userName;
     private String languageCode;
+    private boolean adminAccess;
+    private boolean userAccess;
     @Column(name = "state_id")
     private Integer stateId;
 
     @Override
     public String toString() {
         return "UserEntity{" +
-                "chatId=" + chatId +
-                ", firstName='" + firstName + '\'' +
-                ", secondName='" + secondName + '\'' +
-                ", userName='" + userName + '\'' +
+                "userName='" + userName + '\'' +
+                " chatId=" + chatId +
                 ", languageCode='" + languageCode + '\'' +
+                ", adminAccess=" + adminAccess +
+                ", userAccess=" + userAccess +
                 ", stateId=" + stateId +
                 '}';
     }

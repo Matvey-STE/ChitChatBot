@@ -1,6 +1,6 @@
 package com.matveyvs.chitchatbot.appconfig;
 
-import com.matveyvs.chitchatbot.WebHookBotConfig;
+import com.matveyvs.chitchatbot.service.WebHookBotService;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -18,8 +18,8 @@ public class BotConfig{
     private String webHookPath;
     private String botToken;
     @Bean
-    public WebHookBotConfig webHookBotConfig() {
-        WebHookBotConfig webHookBotConfig = new WebHookBotConfig();
+    public WebHookBotService webHookBotConfig() {
+        WebHookBotService webHookBotConfig = new WebHookBotService();
         webHookBotConfig.setBotName(botName);
         webHookBotConfig.setWebHookPath(webHookPath);
         webHookBotConfig.setBotToken(botToken);
