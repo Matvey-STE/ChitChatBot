@@ -40,7 +40,7 @@ public class StartCommandHandler implements InputMessageHandler{
 
         if (user == null) {
             user = new UserEntity(chatId, telegram.getFirstName(), telegram.getLastName(), telegram.getUserName(), "en-UK",false,false,0);
-            user.setStateId(BotState.NONE.ordinal());
+            user.setStateId(BotState.TEST.ordinal());
             userService.saveUser(user);
             log.info("Add new user: {}", user.toString());
             reply = new SendMessage();

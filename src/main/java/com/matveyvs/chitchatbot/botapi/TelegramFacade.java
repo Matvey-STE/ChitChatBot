@@ -76,6 +76,7 @@ public class TelegramFacade {
             case "/admin" -> botState = BotState.ADMIN;
             case "/user" -> botState = BotState.USER;
             case "/help" -> botState = BotState.HELP;
+            case "/test" -> botState = BotState.TEST;
             default -> {
                 UserEntity userEntity = userDataCache.getUserByIdFromCache(chatId);
                 if (userEntity == null) {
@@ -87,16 +88,4 @@ public class TelegramFacade {
         }
         return botState;
     }
-    //todo testing callback query
-/*    private BotApiMethod<?> processCallBackQuery(CallbackQuery buttonQuery) {
-        String chatId = buttonQuery.getMessage().getChatId().toString();
-        Integer callBackQueryIdMessage = buttonQuery.getMessage().getMessageId();
-        BotApiMethod<?> callbackAnswer = null;
-        if (buttonQuery.getData().equals("admin")){
-            webHookBotService.editMessage(chatId, callBackQueryIdMessage, "Hello my friend ADMIN");
-        } else if (buttonQuery.getData().equals("user")){
-            webHookBotService.deleteMessage(chatId, callBackQueryIdMessage);
-        }
-        return null;
-    }*/
 }

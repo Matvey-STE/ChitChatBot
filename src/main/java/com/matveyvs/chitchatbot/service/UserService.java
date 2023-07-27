@@ -1,15 +1,15 @@
 package com.matveyvs.chitchatbot.service;
 
 import com.matveyvs.chitchatbot.entity.UserEntity;
-import com.matveyvs.chitchatbot.entity.repository.UserRepository;
+import com.matveyvs.chitchatbot.entity.repository.UserEntityRepository;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 @Component
 public class UserService {
-    private final UserRepository userRepository;
-    public UserService(UserRepository userRepository) {
+    private final UserEntityRepository userRepository;
+    public UserService(UserEntityRepository userRepository) {
         this.userRepository = userRepository;
     }
     @Transactional(readOnly = true)

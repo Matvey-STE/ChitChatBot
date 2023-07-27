@@ -8,7 +8,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface UserRepository extends JpaRepository<UserEntity, Long> {
+public interface UserEntityRepository extends JpaRepository<UserEntity, Long> {
     List<UserEntity> findAll();
     UserEntity findByChatId (Long chatId);
     void deleteByChatId (Long chatId);
