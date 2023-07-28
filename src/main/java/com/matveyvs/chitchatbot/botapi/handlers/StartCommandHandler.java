@@ -33,25 +33,29 @@ public class StartCommandHandler implements InputMessageHandler{
         Integer messageId = message.getMessageId();
         long chatId = message.getChatId();
         org.telegram.telegrambots.meta.api.objects.User telegram = message.getFrom();
-        UserEntity user = userService.findUserById(chatId);
+        UserEntity userEntity = userService.findUserById(chatId);
 
         //delete message before create a new one
         webHookBotService.deleteMessage(String.valueOf(chatId), messageId);
 
-        if (user == null) {
-            user = new UserEntity(chatId, telegram.getFirstName(), telegram.getLastName(), telegram.getUserName(), "en-UK",false,false,0);
-            user.setStateId(BotState.TEST.ordinal());
-            userService.saveUser(user);
-            log.info("Add new user: {}", user.toString());
+        if (userEntity == null) {
+            userEntity = new UserEntity(chatId, telegram.getFirstName(), telegram.getLastName(), telegram.getUserName(), "en-UK",false,false,0);
+            userEntity.setStateId(BotState.TEST.ordinal());
+            userService.saveUser(userEntity);
+            log.info("Add new user: {}", userEntity.toString());
             reply = new SendMessage();
             reply.setChatId(chatId);
             reply.enableHtml(true);
             reply.setText(replyMessageService.getReplyText("reply.access.ask"));
             reply.setReplyMarkup(getChooseInlineAdminUserMessages());
         } else {
-            user.setStateId(BotState.USER.ordinal());
-            userService.saveUser(user);
-            reply = replyMessageService.getReplyMessage(chatId,"reply.hello.registered");
+            userEntity.setStateId(BotState.USER.ordinal());
+            userService.saveUser(userEntity);
+            reply = new SendMessage();
+            reply.setChatId(chatId);
+            reply.enableHtml(true);
+            reply.setText(replyMessageService.getReplyText("reply.hello.registered"));
+            reply.setReplyMarkup(getChooseInlineAdminUserMessages());
         }
         return reply;
     }
@@ -77,6 +81,6 @@ public class StartCommandHandler implements InputMessageHandler{
     }
     @Override
     public BotState getHandlerName() {
-        return BotState.START_MESSAGE;
+        return BotState.START;
     }
 }

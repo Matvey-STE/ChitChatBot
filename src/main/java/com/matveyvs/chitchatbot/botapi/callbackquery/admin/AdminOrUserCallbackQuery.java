@@ -1,6 +1,7 @@
-package com.matveyvs.chitchatbot.botapi.callbackquery;
+package com.matveyvs.chitchatbot.botapi.callbackquery.admin;
 
 import com.matveyvs.chitchatbot.botapi.BotState;
+import com.matveyvs.chitchatbot.botapi.callbackquery.CallbackQueryHandler;
 import com.matveyvs.chitchatbot.entity.UserEntity;
 import com.matveyvs.chitchatbot.service.ReplyMessageService;
 import com.matveyvs.chitchatbot.service.UserService;
@@ -13,9 +14,9 @@ import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
 import java.util.List;
 @Log4j2
 @Component
-public class AdminOrUserCallbackQuery implements CallbackQueryHandler{
+public class AdminOrUserCallbackQuery implements CallbackQueryHandler {
     private final UserService userService;
-    private final String ADMIN = "admin";
+    private final String ADMIN = "admin2";
     private final String USER = "user";
     private final ReplyMessageService replyMessageService;
     private final WebHookBotService webHookBotService;
@@ -36,11 +37,12 @@ public class AdminOrUserCallbackQuery implements CallbackQueryHandler{
         if (callbackData.equals(ADMIN)){
             currentUser.setStateId(BotState.ADMIN_PASSWORD.ordinal());
             log.info("Switch to {} from user {}", ADMIN, currentUser.toString());
-            reply = replyMessageService.getReplyMessage(String.valueOf(chatId), "reply.admin.message");
+            //todo make message to admin
+            reply = replyMessageService.getAndSendReplyMessage(String.valueOf(chatId), "reply.user.message");
         } else if (callbackData.equals(USER)){
             currentUser.setStateId(BotState.USER.ordinal());
             log.info("Switch to {} from user {}", USER, currentUser.toString());
-            reply = replyMessageService.getReplyMessage(String.valueOf(chatId), "reply.user.message");
+            reply = replyMessageService.getAndSendReplyMessage(String.valueOf(chatId), "reply.user.message");
         }
         //todo delete message from chat
         webHookBotService.deleteMessage(String.valueOf(chatId), callBackMessageId);

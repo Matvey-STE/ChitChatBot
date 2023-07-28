@@ -1,5 +1,6 @@
-package com.matveyvs.chitchatbot.botapi.callbackquery;
+package com.matveyvs.chitchatbot.botapi.callbackquery.tasks;
 
+import com.matveyvs.chitchatbot.botapi.callbackquery.CallbackQueryHandler;
 import com.matveyvs.chitchatbot.botapi.handlers.TestCommandHandler;
 import com.matveyvs.chitchatbot.service.ReplyMessageService;
 import com.matveyvs.chitchatbot.service.WebHookBotService;
@@ -11,7 +12,7 @@ import org.telegram.telegrambots.meta.api.objects.Message;
 
 import java.util.List;
 @Component
-public class TestCallBackQuery implements CallbackQueryHandler{
+public class TestCallBackQuery implements CallbackQueryHandler {
     private final BestDefinitionService bestDefinitionService;
     private final WebHookBotService webHookBotService;
     private final TestCommandHandler testCommandHandler;
@@ -38,9 +39,9 @@ public class TestCallBackQuery implements CallbackQueryHandler{
         String callbackData = callbackQuery.getData();
 
         if (callbackData.contains(String.valueOf(rightButton))){
-            reply = replyMessageService.getReplyMessage(chatId, "callback.reply.success.message");
+            reply = replyMessageService.getAndSendReplyMessage(chatId, "callback.reply.success.message");
         } else {
-            reply = replyMessageService.getReplyMessage(chatId, "callback.reply.wrong.message");
+            reply = replyMessageService.getAndSendReplyMessage(chatId, "callback.reply.wrong.message");
         }
         webHookBotService.deleteMessage(String.valueOf(chatId),callBackMessageId);
 

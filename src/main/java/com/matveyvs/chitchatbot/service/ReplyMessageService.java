@@ -13,14 +13,14 @@ public class ReplyMessageService {
         this.localeMessageService = localeMessageService;
     }
 
-    public SendMessage getReplyMessage(Long chatId, String replyMessage){
+    public SendMessage getAndSendReplyMessage(Long chatId, String replyMessage){
         SendMessage sendMessage = new SendMessage();
         sendMessage.setChatId(chatId);
         sendMessage.setText(localeMessageService.getMessage(replyMessage));
         sendMessage.setParseMode("HTML");
         return sendMessage;
     }
-    public SendMessage getReplyMessage(String chatId, String replyMessage, Object... args){
+    public SendMessage getAndSendReplyMessage(String chatId, String replyMessage, Object... args){
         return new SendMessage(chatId, localeMessageService.getMessage(replyMessage,args));
     }
     public void setLocaleMessageService(String localeTag) {
