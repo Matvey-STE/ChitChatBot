@@ -1,9 +1,9 @@
 package com.matveyvs.chitchatbot.botapi.callbackquery;
 
 import com.matveyvs.chitchatbot.botapi.BotState;
-import com.matveyvs.chitchatbot.cache.UserDataCache;
 import com.matveyvs.chitchatbot.entity.UserEntity;
 import com.matveyvs.chitchatbot.service.ReplyMessageService;
+import com.matveyvs.chitchatbot.service.UserService;
 import com.matveyvs.chitchatbot.service.WebHookBotService;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Component;
@@ -14,14 +14,14 @@ import java.util.List;
 @Log4j2
 @Component
 public class AdminOrUserCallbackQuery implements CallbackQueryHandler{
+    private final UserService userService;
     private final String ADMIN = "admin";
     private final String USER = "user";
-    private final UserDataCache userDataCache;
     private final ReplyMessageService replyMessageService;
     private final WebHookBotService webHookBotService;
 
-    public AdminOrUserCallbackQuery(UserDataCache userDataCache, ReplyMessageService replyMessageService, WebHookBotService webHookBotService) {
-        this.userDataCache = userDataCache;
+    public AdminOrUserCallbackQuery(UserService userService, ReplyMessageService replyMessageService, WebHookBotService webHookBotService) {
+        this.userService = userService;
         this.replyMessageService = replyMessageService;
         this.webHookBotService = webHookBotService;
     }
@@ -32,7 +32,7 @@ public class AdminOrUserCallbackQuery implements CallbackQueryHandler{
         Integer callBackMessageId = callbackQuery.getMessage().getMessageId();
         Long chatId = callbackQuery.getMessage().getChatId();
         String callbackData = callbackQuery.getData();
-        UserEntity currentUser = userDataCache.getUserByIdFromCache(chatId);
+        UserEntity currentUser = userService.findUserById(chatId);
         if (callbackData.equals(ADMIN)){
             currentUser.setStateId(BotState.ADMIN_PASSWORD.ordinal());
             log.info("Switch to {} from user {}", ADMIN, currentUser.toString());
@@ -44,7 +44,7 @@ public class AdminOrUserCallbackQuery implements CallbackQueryHandler{
         }
         //todo delete message from chat
         webHookBotService.deleteMessage(String.valueOf(chatId), callBackMessageId);
-        userDataCache.saveCachedUser(currentUser);
+        userService.saveUser(currentUser);
 
         return reply;
     }

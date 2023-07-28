@@ -1,8 +1,8 @@
 package com.matveyvs.chitchatbot.botapi;
 
 import com.matveyvs.chitchatbot.botapi.callbackquery.CallbackQueryFacade;
-import com.matveyvs.chitchatbot.cache.UserDataCache;
 import com.matveyvs.chitchatbot.entity.UserEntity;
+import com.matveyvs.chitchatbot.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
@@ -14,13 +14,14 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 @Slf4j
 @Component
 public class TelegramFacade {
+    private final UserService userService;
+
     private final BotStateContext botStateContext;
-    private final UserDataCache userDataCache;
     private final CallbackQueryFacade callbackQueryFacade;
 
-    public TelegramFacade(BotStateContext botStateContext, UserDataCache userDataCache, CallbackQueryFacade callbackQueryFacade) {
+    public TelegramFacade(UserService userService, BotStateContext botStateContext, CallbackQueryFacade callbackQueryFacade) {
+        this.userService = userService;
         this.botStateContext = botStateContext;
-        this.userDataCache = userDataCache;
         this.callbackQueryFacade = callbackQueryFacade;
     }
 
@@ -51,11 +52,11 @@ public class TelegramFacade {
         Long chatId = message.getFrom().getId();
         BotState botState = this.getUserStateByMessage(message);
         try {
-            UserEntity  userEntity = userDataCache.getUserByIdFromCache(chatId);
+            UserEntity  userEntity = userService.findUserById(chatId);
             if (userEntity != null) {
                 log.info("User before return reply message : {} ", userEntity);
                 userEntity.setStateId(botState.ordinal());
-                userDataCache.saveCachedUser(userEntity);
+                userService.saveUser(userEntity);
                 System.out.println("User was saved");
             }
             reply = botStateContext.processInputMessage(botState, message);
@@ -78,11 +79,11 @@ public class TelegramFacade {
             case "/help" -> botState = BotState.HELP;
             case "/test" -> botState = BotState.TEST;
             default -> {
-                UserEntity userEntity = userDataCache.getUserByIdFromCache(chatId);
+                UserEntity userEntity = userService.findUserById(chatId);
                 if (userEntity == null) {
                     botState = BotState.START_MESSAGE;
                 } else {
-                    botState = userDataCache.getUserByIdFromCache(chatId) != null ? BotState.getValueByInteger(userEntity.getStateId()) : BotState.NONE;
+                    botState = userService.findUserById(chatId) != null ? BotState.getValueByInteger(userEntity.getStateId()) : BotState.NONE;
                 }
             }
         }

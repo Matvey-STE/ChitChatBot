@@ -28,4 +28,18 @@ public class UserService {
     public void saveUser (UserEntity userEntity){
         userRepository.save(userEntity);
     }
+
+    //todo create special methods for userService
+/*    public void setUsersCurrentBotState(long chatId, BotState botState) {
+        UserEntity userById = findUserById(chatId);
+        userById.setStateId(botState.ordinal());
+    }
+    public BotState getUserCurrentBotState(long chatId) {
+        UserEntity userById = findUserById(chatId);
+        BotState botState = BotState.getValueByInteger(userById.getStateId());
+        if (botState == null){
+            botState = BotState.START_MESSAGE;
+        }
+        return botState;
+    }*/
 }
