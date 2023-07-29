@@ -59,19 +59,14 @@ public class StartCommandHandler implements InputMessageHandler{
     public InlineKeyboardMarkup getChooseInlineAdminUserMessages(){
         InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
 
-        InlineKeyboardButton adminButton = new InlineKeyboardButton(replyMessageService.getReplyText("admin.button"));
-        InlineKeyboardButton userButton = new InlineKeyboardButton(replyMessageService.getReplyText("user.button"));
-        adminButton.setCallbackData("admin");
-        userButton.setCallbackData("user");
+        InlineKeyboardButton adminButton = new InlineKeyboardButton(replyMessageService.getReplyText("start.button"));
+        adminButton.setCallbackData("start");
 
         List<InlineKeyboardButton> row1 = new ArrayList<>();
-        List<InlineKeyboardButton> row2 = new ArrayList<>();
         row1.add(adminButton);
-        row2.add(userButton);
 
         List<List<InlineKeyboardButton>> buttons = new ArrayList<>();
         buttons.add(row1);
-        buttons.add(row2);
 
         inlineKeyboardMarkup.setKeyboard(buttons);
         return inlineKeyboardMarkup;
