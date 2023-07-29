@@ -1,6 +1,8 @@
 package com.matveyvs.chitchatbot.botapi.callbackquery.admin;
 
+import com.matveyvs.chitchatbot.botapi.BotState;
 import com.matveyvs.chitchatbot.botapi.callbackquery.CallbackQueryHandler;
+import com.matveyvs.chitchatbot.entity.UserEntity;
 import com.matveyvs.chitchatbot.service.KeyboardService;
 import com.matveyvs.chitchatbot.service.ReplyMessageService;
 import com.matveyvs.chitchatbot.service.UserService;
@@ -27,6 +29,8 @@ public class AdminCallbackQuery implements CallbackQueryHandler {
         Long chatId = callbackQuery.getMessage().getChatId();
         String callbackData = callbackQuery.getData();
 
+        UserEntity userEntity = userService.findUserById(chatId);
+
         if (callbackData.equals("admin")){
             List<String> listOfButtons = List.of("Login", "Create Password", "Return to start");
             List<String> listOfBQueries = List.of("login", "password", "start");
@@ -36,11 +40,37 @@ public class AdminCallbackQuery implements CallbackQueryHandler {
             reply.setText(replyMessageService.getReplyText("reply.admin.keyboard.message"));
             reply.setReplyMarkup(keyboardService.getInlineKeyboard(listOfButtons,listOfBQueries));
         }
+        if (callbackData.equals("adminservice")){
+            List<String> listOfButtons = List
+                    .of("Add user", "Add admin", "List of users", "List of admins", "Return to start");
+            List<String> listOfBQueries = List
+                    .of("adduser", "addadmin","listofusers","listofadmins", "start");
+
+            reply = new SendMessage();
+            reply.setChatId(chatId);
+            reply.setText(replyMessageService.getReplyText("reply.admin.keyboard.message"));
+            reply.setReplyMarkup(keyboardService.getInlineKeyboard(listOfButtons,listOfBQueries));
+
+        }
+
         replyMessageService.deleteMessage(chatId,callBackMessageId);
+
+        if (callbackData.equals("adduser")){
+            reply = replyMessageService
+                    .getReplyMessage(chatId,
+                            "admin.adduser.question");
+
+            userEntity.setStateId(BotState.ADDUSER.ordinal());
+            userService.saveUser(userEntity);
+        }
+
+
+
+
         return reply;
     }
     @Override
     public List<String> getHandlerQueryType() {
-        return List.of("admin");
+        return List.of("admin","adminservice","adduser");
     }
 }

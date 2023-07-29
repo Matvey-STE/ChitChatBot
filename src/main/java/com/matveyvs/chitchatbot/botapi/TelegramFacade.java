@@ -4,6 +4,7 @@ import com.matveyvs.chitchatbot.botapi.callbackquery.CallbackQueryFacade;
 import com.matveyvs.chitchatbot.entity.UserEntity;
 import com.matveyvs.chitchatbot.service.UserService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -70,16 +71,31 @@ public class TelegramFacade {
         Long chatId = message.getChatId();
         BotState botState;
         String inputMessage = message.getText();
+
+/*        if (inputMessage.equals("/start")){
+            botState = BotState.START;
+        }
+        if (inputMessage.equals("/help")){
+            botState = BotState.HELP;
+        }
+        if (inputMessage.equals("/test")){
+            botState = BotState.TEST;
+        }
+        if (inputMessage.equals(adminPassword)){
+            botState =
+        }*/
         switch (inputMessage) {
             case "/start" -> botState = BotState.START;
-            case "/admin" -> botState = BotState.ADMIN;
-            case "/user" -> botState = BotState.USER;
             case "/help" -> botState = BotState.HELP;
             case "/test" -> botState = BotState.TEST;
             default -> {
                 UserEntity userEntity = userService.findUserById(chatId);
                 if (userEntity == null) {
                     botState = BotState.START;
+                } else if (userEntity.getStateId() == BotState.ADMINPASSWORD.ordinal()) {
+                    botState = BotState.ADMINPASSWORD;
+                } else if (userEntity.getStateId() == BotState.ADDUSER.ordinal()){
+                    botState = BotState.ADDUSER;
                 } else {
                     botState = userService.findUserById(chatId) != null ? BotState.getValueByInteger(userEntity.getStateId()) : BotState.NONE;
                 }

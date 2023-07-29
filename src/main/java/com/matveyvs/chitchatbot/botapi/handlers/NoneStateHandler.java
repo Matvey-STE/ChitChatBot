@@ -22,7 +22,6 @@ public class NoneStateHandler implements InputMessageHandler{
         log.info("Handle " + BotState.NONE);
         return replyMessageService.getReplyMessage(chat_id,"reply.user.new");
     }
-
     @Override
     public BotState getHandlerName() {
         return BotState.NONE;

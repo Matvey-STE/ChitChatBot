@@ -8,7 +8,6 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
-import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 
 import java.util.List;
 @Log4j2
@@ -33,9 +32,10 @@ public class UserCallbackQuery implements CallbackQueryHandler {
         if (callbackData.equals("user")) {
             List<String> listOfButtons = List.of("Return to START");
             List<String> listOfBQueries = List.of("start");
-            InlineKeyboardMarkup inlineKeyboardMarkup = keyboardService.getInlineKeyboard(listOfButtons,listOfBQueries);
-
-            reply = replyMessageService.getReplyMessage(chatId, "reply.user.message",inlineKeyboardMarkup);
+            reply = replyMessageService
+                    .getReplyMessage(chatId,
+                            "reply.user.message",
+                            keyboardService.getInlineKeyboard(listOfButtons,listOfBQueries));
         }
             replyMessageService.deleteMessage(chatId, callBackMessageId);
         return reply;
