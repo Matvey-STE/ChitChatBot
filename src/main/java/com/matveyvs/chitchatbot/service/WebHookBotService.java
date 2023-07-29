@@ -21,8 +21,6 @@ import java.util.*;
 public class WebHookBotService extends TelegramWebhookBot {
     @Autowired
     private UserService userService;
-    @Autowired
-    private ReplyMessageService replyMessageService;
     private String webHookPath;
     private String botName;
     private String botToken;
@@ -85,8 +83,8 @@ public class WebHookBotService extends TelegramWebhookBot {
                                         passwordMessage = true;
                                     }
                                     case USER -> sendMessage(chatId, "Please ask ADMIN to give you access to this bot");
-                                    case HELP -> sendMessage(replyMessageService.getAndSendReplyMessage(chatId, "reply.command.help.commands"));
-                                    default -> sendMessage(replyMessageService.getAndSendReplyMessage(chatId, "reply.command.unsupported.msg"));
+                                    case HELP -> sendMessage(chatId, "test");
+                                    default -> sendMessage(chatId,"default");
                                 }
                             } else {
                                 sendMessage(chatId, "staticMessages.getUnsupportedMessage()" + "/help");
@@ -133,7 +131,7 @@ public class WebHookBotService extends TelegramWebhookBot {
                                             printUsers(chatId, users);
                                         }
                                     }
-                                    case ADMINHELP -> sendMessage(replyMessageService.getAndSendReplyMessage(chatId, "reply.command.help.commands.admin"));
+                                    case ADMINHELP -> sendMessage(chatId,"adminhelp");
                                     case EXIT -> {
                                         sendMessage(chatId, "You're in main menu press /help " +
                                                 "to get possible messages");
@@ -150,7 +148,7 @@ public class WebHookBotService extends TelegramWebhookBot {
                     case USER -> {
                         if (isEnumValueInList(text, getListOfPossibleCommands())) {
                             switch (getTgCommands(text)) {
-                                case USERHELP -> sendMessage(replyMessageService.getAndSendReplyMessage(chatId, "reply.command.help.commands.user"));
+                                case USERHELP -> sendMessage(chatId, "userhelp");
                                 case CHOOSETASK -> sendMessage(chatId, "User CAN CHOOSE TASK HERE");
                                 case EXIT -> {
                                     if (!admins.containsKey(chatId)) {
