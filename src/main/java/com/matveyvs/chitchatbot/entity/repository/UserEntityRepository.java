@@ -20,6 +20,6 @@ public interface UserEntityRepository extends JpaRepository<UserEntity, Long> {
     int getUserBotStateById(Long chatId);
     @Transactional
     @Modifying
-    @Query(value = "UPDATE user_entity SET bot_state = :botStateInteger WHERE chat_id = :chatId",nativeQuery = true)
+    @Query(value = "UPDATE user_entity SET BOT_STATE = :botStateInteger WHERE CHAT_ID = :chatId",nativeQuery = true)
     void setUserBotStateById(Long chatId, Integer botStateInteger);
 }

@@ -2,6 +2,7 @@ package com.matveyvs.chitchatbot.service;
 
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 
 import java.util.Locale;
 
@@ -18,17 +19,25 @@ public class ReplyMessageService {
     public void setLocaleMessageService(String localeTag) {
         localeMessageService.setLocale(Locale.forLanguageTag(localeTag));
     }
-    public SendMessage getAndSendReplyMessage(Long chatId, String replyMessage){
+    public SendMessage getReplyMessage(Long chatId, String message){
         SendMessage sendMessage = new SendMessage();
         sendMessage.setChatId(chatId);
-        sendMessage.setText(localeMessageService.getMessage(replyMessage));
+        sendMessage.setText(localeMessageService.getMessage(message));
         sendMessage.setParseMode("HTML");
         return sendMessage;
     }
-    public void deleteMessage(Long chatId, Integer messageId){
-        webHookBotService.deleteMessage(chatId, messageId);
+    public SendMessage getReplyMessage(Long chatId, String message, InlineKeyboardMarkup inlineKeyboard){
+        SendMessage sendMessage = new SendMessage();
+        sendMessage.setChatId(chatId);
+        sendMessage.setText(localeMessageService.getMessage(message));
+        sendMessage.setReplyMarkup(inlineKeyboard);
+        sendMessage.setParseMode("HTML");
+        return sendMessage;
     }
     public String getReplyText(String replyMessage){
         return localeMessageService.getMessage(replyMessage);
+    }
+    public void deleteMessage(Long chatId, Integer messageId){
+        webHookBotService.deleteMessage(chatId, messageId);
     }
 }

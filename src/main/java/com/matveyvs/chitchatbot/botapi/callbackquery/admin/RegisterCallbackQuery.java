@@ -1,20 +1,20 @@
 package com.matveyvs.chitchatbot.botapi.callbackquery.admin;
 
 import com.matveyvs.chitchatbot.botapi.callbackquery.CallbackQueryHandler;
+import com.matveyvs.chitchatbot.service.KeyboardService;
 import com.matveyvs.chitchatbot.service.ReplyMessageService;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
-import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
-import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 
-import java.util.ArrayList;
 import java.util.List;
 @Component
 public class RegisterCallbackQuery implements CallbackQueryHandler {
+    private final KeyboardService keyboardService;
     private final ReplyMessageService replyMessageService;
 
-    public RegisterCallbackQuery(ReplyMessageService replyMessageService) {
+    public RegisterCallbackQuery(KeyboardService keyboardService, ReplyMessageService replyMessageService) {
+        this.keyboardService = keyboardService;
         this.replyMessageService = replyMessageService;
     }
     @Override
@@ -23,43 +23,26 @@ public class RegisterCallbackQuery implements CallbackQueryHandler {
         Integer callBackMessageId = callbackQuery.getMessage().getMessageId();
         Long chatId = callbackQuery.getMessage().getChatId();
         String callbackData = callbackQuery.getData();
+
         if (callbackData.equals("login")){
-            reply = replyMessageService.getAndSendReplyMessage(chatId, "admin.password.button");
-        } else if (callbackData.equals("password")){
-            reply = new SendMessage(String.valueOf(chatId), replyMessageService.getReplyText("admin.generate.admin.password.message"));
-                    reply.setReplyMarkup(getPasswordInlineMenu());
+            List<String> listOfButtons = List.of("Return to START");
+            List<String> listOfBQueries = List.of("start");
+            reply = replyMessageService
+                    .getReplyMessage(chatId,
+                            "admin.password.button",
+                            keyboardService.getInlineKeyboard(listOfButtons,listOfBQueries));
+        }
+        if (callbackData.equals("password")){
+            List<String> listOfButtons = List.of("Return to START");
+            List<String> listOfBQueries = List.of("start");
+            reply = replyMessageService
+                    .getReplyMessage(chatId,
+                            "admin.generate.admin.password.message",
+                            keyboardService.getInlineKeyboard(listOfButtons,listOfBQueries));
         }
         replyMessageService.deleteMessage(chatId,callBackMessageId);
         return reply;
     }
-    private InlineKeyboardMarkup getPasswordInlineMenu(){
-        InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
-
-        InlineKeyboardButton adminButton = new InlineKeyboardButton(replyMessageService.getReplyText("start.return"));
-        adminButton.setCallbackData("admin");
-        List<InlineKeyboardButton> row1 = new ArrayList<>();
-        row1.add(adminButton);
-        List<List<InlineKeyboardButton>> buttons = new ArrayList<>();
-        buttons.add(row1);
-
-        inlineKeyboardMarkup.setKeyboard(buttons);
-        return inlineKeyboardMarkup;
-    }
-    private InlineKeyboardMarkup getLoginCallbackQuery(){
-        InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
-
-        InlineKeyboardButton adminButton = new InlineKeyboardButton(replyMessageService.getReplyText("start.return"));
-        adminButton.setCallbackData("admin");
-        List<InlineKeyboardButton> row1 = new ArrayList<>();
-        row1.add(adminButton);
-        List<List<InlineKeyboardButton>> buttons = new ArrayList<>();
-        buttons.add(row1);
-
-        inlineKeyboardMarkup.setKeyboard(buttons);
-        return inlineKeyboardMarkup;
-    }
-
-
     @Override
     public List<String> getHandlerQueryType() {
         return List.of("login","password");

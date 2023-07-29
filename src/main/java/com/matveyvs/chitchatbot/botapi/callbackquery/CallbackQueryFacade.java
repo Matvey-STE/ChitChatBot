@@ -8,13 +8,10 @@ import java.util.List;
 
 @Component
 public class CallbackQueryFacade {
-
     private final List<CallbackQueryHandler> callbackQueryHandlers;
-
     public CallbackQueryFacade(List<CallbackQueryHandler> callbackQueryHandlers) {
         this.callbackQueryHandlers = callbackQueryHandlers;
     }
-
     public SendMessage processCallBackQuery(CallbackQuery userQuery){
         return getHandlerByCallBackQuery(userQuery.getData()).handleCallbackQuery(userQuery);
     }

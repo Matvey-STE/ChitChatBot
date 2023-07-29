@@ -21,7 +21,7 @@ public class AdminCommandHandler implements InputMessageHandler{
     public SendMessage handle(Message message) {
 
         SendMessage reply;
-        reply = replyMessageService.getAndSendReplyMessage(message.getChatId(), "reply.admin.message");
+        reply = replyMessageService.getReplyMessage(message.getChatId(), "reply.admin.message");
 
         return reply;
     }

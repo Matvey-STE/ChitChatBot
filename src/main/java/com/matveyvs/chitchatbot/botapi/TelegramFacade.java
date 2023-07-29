@@ -45,7 +45,6 @@ public class TelegramFacade {
         }
         return replyMessage;
     }
-
     private SendMessage handleInputMessage(Message message) {
         SendMessage reply;
         Long chatId = message.getFrom().getId();
@@ -53,7 +52,7 @@ public class TelegramFacade {
         try {
             UserEntity  userEntity = userService.findUserById(chatId);
             if (userEntity != null) {
-                log.info("User before return reply message : {} ", userEntity);
+//                log.info("User before return reply message : {} ", userEntity);
                 userEntity.setStateId(botState.ordinal());
                 userService.saveUser(userEntity);
                 System.out.println("User was saved");

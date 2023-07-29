@@ -30,15 +30,14 @@ public class TestCallBackQuery implements CallbackQueryHandler {
 
         SendMessage reply;
         Message message = callbackQuery.getMessage();
-
         Integer callBackMessageId = message.getMessageId();
         Long chatId = message.getChatId();
         String callbackData = callbackQuery.getData();
 
         if (callbackData.contains(String.valueOf(rightButton))){
-            reply = replyMessageService.getAndSendReplyMessage(chatId, "callback.reply.success.message");
+            reply = replyMessageService.getReplyMessage(chatId, "callback.reply.success.message");
         } else {
-            reply = replyMessageService.getAndSendReplyMessage(chatId, "callback.reply.wrong.message");
+            reply = replyMessageService.getReplyMessage(chatId, "callback.reply.wrong.message");
         }
         replyMessageService.deleteMessage(chatId,callBackMessageId);
 
