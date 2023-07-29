@@ -23,12 +23,10 @@ public class TestCommandHandler implements InputMessageHandler{
     private final List<String> callBackQueriesList = new ArrayList<>();
     private final BestDefinitionService bestDefinitionService;
     private final ReplyMessageService replyMessageService;
-    private final WebHookBotService webHookBotService;
 
-    public TestCommandHandler(BestDefinitionService bestDefinitionService, ReplyMessageService replyMessageService, WebHookBotService webHookBotService) {
+    public TestCommandHandler(BestDefinitionService bestDefinitionService, ReplyMessageService replyMessageService) {
         this.bestDefinitionService = bestDefinitionService;
         this.replyMessageService = replyMessageService;
-        this.webHookBotService = webHookBotService;
     }
 
     public List<String> getCallBackQueriesList() {
@@ -107,7 +105,7 @@ public class TestCommandHandler implements InputMessageHandler{
         reply.setText(createMessageTaskConstructor(wordOfTask,listOfAnswers));
         reply.setReplyMarkup(createTaskMessageWithButtons(listOfAnswers));
 
-        webHookBotService.deleteMessage(String.valueOf(chatId),messageId);
+        replyMessageService.deleteMessage(chatId,messageId);
 
         return reply;
     }

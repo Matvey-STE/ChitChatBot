@@ -241,28 +241,16 @@ public class WebHookBotService extends TelegramWebhookBot {
         }
 
     }
-    public void deleteMessage(String chat_id, Integer messageId){
+    public void deleteMessage(Long chatId, Integer messageId){
         DeleteMessage deleteMessage = new DeleteMessage();
         deleteMessage.setMessageId(messageId);
-        deleteMessage.setChatId(chat_id);
+        deleteMessage.setChatId(String.valueOf(chatId));
         try {
             execute(deleteMessage);
         } catch (TelegramApiException e) {
             throw new RuntimeException(e);
         }
     }
-
-
-
-
-
-
-
-
-
-
-
-
 
     @Override
     public String getBotPath() {

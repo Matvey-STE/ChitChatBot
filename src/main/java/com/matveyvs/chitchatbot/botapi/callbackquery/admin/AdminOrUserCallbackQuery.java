@@ -19,12 +19,10 @@ public class AdminOrUserCallbackQuery implements CallbackQueryHandler {
     private final String ADMIN = "admin2";
     private final String USER = "user";
     private final ReplyMessageService replyMessageService;
-    private final WebHookBotService webHookBotService;
 
-    public AdminOrUserCallbackQuery(UserService userService, ReplyMessageService replyMessageService, WebHookBotService webHookBotService) {
+    public AdminOrUserCallbackQuery(UserService userService, ReplyMessageService replyMessageService) {
         this.userService = userService;
         this.replyMessageService = replyMessageService;
-        this.webHookBotService = webHookBotService;
     }
     @Override
     public SendMessage handleCallbackQuery(CallbackQuery callbackQuery) {
@@ -38,14 +36,13 @@ public class AdminOrUserCallbackQuery implements CallbackQueryHandler {
             currentUser.setStateId(BotState.ADMIN_PASSWORD.ordinal());
             log.info("Switch to {} from user {}", ADMIN, currentUser.toString());
             //todo make message to admin
-            reply = replyMessageService.getAndSendReplyMessage(String.valueOf(chatId), "reply.user.message");
+            reply = replyMessageService.getAndSendReplyMessage(chatId, "reply.user.message");
         } else if (callbackData.equals(USER)){
             currentUser.setStateId(BotState.USER.ordinal());
             log.info("Switch to {} from user {}", USER, currentUser.toString());
-            reply = replyMessageService.getAndSendReplyMessage(String.valueOf(chatId), "reply.user.message");
+            reply = replyMessageService.getAndSendReplyMessage(chatId, "reply.user.message");
         }
-        //todo delete message from chat
-        webHookBotService.deleteMessage(String.valueOf(chatId), callBackMessageId);
+        replyMessageService.deleteMessage(chatId, callBackMessageId);
         userService.saveUser(currentUser);
 
         return reply;

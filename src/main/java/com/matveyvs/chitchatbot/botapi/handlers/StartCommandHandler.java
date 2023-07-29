@@ -20,12 +20,10 @@ import java.util.List;
 public class StartCommandHandler implements InputMessageHandler{
     private final UserService userService;
     private final ReplyMessageService replyMessageService;
-    private final WebHookBotService webHookBotService;
 
-    public StartCommandHandler(UserService userService, ReplyMessageService replyMessageService, WebHookBotService webHookBotService) {
+    public StartCommandHandler(UserService userService, ReplyMessageService replyMessageService) {
         this.userService = userService;
         this.replyMessageService = replyMessageService;
-        this.webHookBotService = webHookBotService;
     }
     @Override
     public SendMessage handle(Message message) {
@@ -36,7 +34,7 @@ public class StartCommandHandler implements InputMessageHandler{
         UserEntity userEntity = userService.findUserById(chatId);
 
         //delete message before create a new one
-        webHookBotService.deleteMessage(String.valueOf(chatId), messageId);
+        replyMessageService.deleteMessage(chatId, messageId);
 
         if (userEntity == null) {
             userEntity = new UserEntity(chatId, telegram.getFirstName(), telegram.getLastName(), telegram.getUserName(), "en-UK",false,false,0);

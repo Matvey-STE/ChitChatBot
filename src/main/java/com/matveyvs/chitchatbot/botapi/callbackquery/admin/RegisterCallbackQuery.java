@@ -14,11 +14,9 @@ import java.util.List;
 @Component
 public class RegisterCallbackQuery implements CallbackQueryHandler {
     private final ReplyMessageService replyMessageService;
-    private final WebHookBotService webHookBotService;
 
-    public RegisterCallbackQuery(ReplyMessageService replyMessageService, WebHookBotService webHookBotService) {
+    public RegisterCallbackQuery(ReplyMessageService replyMessageService) {
         this.replyMessageService = replyMessageService;
-        this.webHookBotService = webHookBotService;
     }
     @Override
     public SendMessage handleCallbackQuery(CallbackQuery callbackQuery) {
@@ -32,7 +30,7 @@ public class RegisterCallbackQuery implements CallbackQueryHandler {
             reply = new SendMessage(String.valueOf(chatId), replyMessageService.getReplyText("admin.generate.admin.password.message"));
                     reply.setReplyMarkup(getPasswordInlineMenu());
         }
-        webHookBotService.deleteMessage(String.valueOf(chatId),callBackMessageId);
+        replyMessageService.deleteMessage(chatId,callBackMessageId);
         return reply;
     }
     private InlineKeyboardMarkup getPasswordInlineMenu(){

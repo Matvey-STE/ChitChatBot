@@ -17,12 +17,10 @@ public class AdminCallbackQuery implements CallbackQueryHandler {
 
     private final ReplyMessageService replyMessageService;
     private final UserService userService;
-    private final WebHookBotService webHookBotService;
 
-    public AdminCallbackQuery(ReplyMessageService replyMessageService, UserService userService, WebHookBotService webHookBotService) {
+    public AdminCallbackQuery(ReplyMessageService replyMessageService, UserService userService) {
         this.replyMessageService = replyMessageService;
         this.userService = userService;
-        this.webHookBotService = webHookBotService;
     }
     @Override
     public SendMessage handleCallbackQuery(CallbackQuery callbackQuery) {
@@ -36,7 +34,7 @@ public class AdminCallbackQuery implements CallbackQueryHandler {
             reply.setText(replyMessageService.getReplyText("reply.admin.keyboard.message"));
             reply.setReplyMarkup(getChooseInlineAdminUserMessages());
         }
-        webHookBotService.deleteMessage(String.valueOf(chatId),callBackMessageId);
+        replyMessageService.deleteMessage(chatId,callBackMessageId);
         return reply;
     }
     public InlineKeyboardMarkup getChooseInlineAdminUserMessages(){

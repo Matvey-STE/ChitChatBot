@@ -3,7 +3,6 @@ package com.matveyvs.chitchatbot.botapi.callbackquery.tasks;
 import com.matveyvs.chitchatbot.botapi.callbackquery.CallbackQueryHandler;
 import com.matveyvs.chitchatbot.botapi.handlers.TestCommandHandler;
 import com.matveyvs.chitchatbot.service.ReplyMessageService;
-import com.matveyvs.chitchatbot.service.WebHookBotService;
 import com.matveyvs.chitchatbot.service.taskservices.BestDefinitionService;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -14,13 +13,11 @@ import java.util.List;
 @Component
 public class TestCallBackQuery implements CallbackQueryHandler {
     private final BestDefinitionService bestDefinitionService;
-    private final WebHookBotService webHookBotService;
     private final TestCommandHandler testCommandHandler;
     private final ReplyMessageService replyMessageService;
 
-    public TestCallBackQuery(BestDefinitionService bestDefinitionService, WebHookBotService webHookBotService, TestCommandHandler testCommandHandler, ReplyMessageService replyMessageService) {
+    public TestCallBackQuery(BestDefinitionService bestDefinitionService, TestCommandHandler testCommandHandler, ReplyMessageService replyMessageService) {
         this.bestDefinitionService = bestDefinitionService;
-        this.webHookBotService = webHookBotService;
         this.testCommandHandler = testCommandHandler;
         this.replyMessageService = replyMessageService;
     }
@@ -43,7 +40,7 @@ public class TestCallBackQuery implements CallbackQueryHandler {
         } else {
             reply = replyMessageService.getAndSendReplyMessage(chatId, "callback.reply.wrong.message");
         }
-        webHookBotService.deleteMessage(String.valueOf(chatId),callBackMessageId);
+        replyMessageService.deleteMessage(chatId,callBackMessageId);
 
         return reply;
     }
