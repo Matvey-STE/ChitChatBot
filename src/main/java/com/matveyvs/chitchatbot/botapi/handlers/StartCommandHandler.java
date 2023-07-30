@@ -33,7 +33,7 @@ public class StartCommandHandler implements InputMessageHandler{
         UserEntity userEntity = userService.findUserById(chatId);
 
         if (userEntity == null) {
-            List<String> listOfButtons = List.of("Let's begin journey!");
+            List<String> listOfButtons = List.of("LET'S BEGIN THE JOURNEY!");
             List<String> listOfBQueries = List.of("start");
             reply = replyMessageService
                     .getReplyMessage(chatId,
@@ -46,7 +46,7 @@ public class StartCommandHandler implements InputMessageHandler{
             log.info("Add new user: {}", userEntity.toString());
 
         } else {
-            List<String> listOfButtons = List.of("Hi again, let's play the game");
+            List<String> listOfButtons = List.of("LET'S BEGIN THE JOURNEY!");
             List<String> listOfBQueries = List.of("start");
             reply = replyMessageService
                     .getReplyMessage(chatId,

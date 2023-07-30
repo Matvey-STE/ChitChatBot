@@ -4,15 +4,16 @@ public enum BotState {
 
     START,
     ADMINPASSWORD,
-    ADDUSER, ADDADMIN,
+    ADDUSER,
+    ADDADMIN,
     LISTOFADMINS, LISTOFUSERS,
     HELP,
     TEST,
+    ADMIN,
 
 
 
     NONE,
-    ADMIN,
     DELETEUSER, UPDATEDATA, ADMINHELP,
     USER, USER_HELP;
     //method that return BotState by Integer

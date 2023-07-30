@@ -39,12 +39,11 @@ public class AdminCommandHandler implements InputMessageHandler{
             userEntity.setStateId(BotState.START.ordinal());
             userService.saveUser(userEntity);
         }
-
         return reply;
     }
 
     @Override
     public BotState getHandlerName() {
-        return BotState.ADDUSER;
+        return BotState.ADMIN;
     }
 }

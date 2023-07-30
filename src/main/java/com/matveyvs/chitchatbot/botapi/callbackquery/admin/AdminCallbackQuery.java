@@ -52,9 +52,6 @@ public class AdminCallbackQuery implements CallbackQueryHandler {
             reply.setReplyMarkup(keyboardService.getInlineKeyboard(listOfButtons,listOfBQueries));
 
         }
-
-        replyMessageService.deleteMessage(chatId,callBackMessageId);
-
         if (callbackData.equals("adduser")){
             reply = replyMessageService
                     .getReplyMessage(chatId,
@@ -63,10 +60,7 @@ public class AdminCallbackQuery implements CallbackQueryHandler {
             userEntity.setStateId(BotState.ADDUSER.ordinal());
             userService.saveUser(userEntity);
         }
-
-
-
-
+        replyMessageService.deleteMessage(chatId,callBackMessageId);
         return reply;
     }
     @Override

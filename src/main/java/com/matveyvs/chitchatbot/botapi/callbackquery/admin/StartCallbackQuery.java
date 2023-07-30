@@ -1,19 +1,27 @@
 package com.matveyvs.chitchatbot.botapi.callbackquery.admin;
 
+import com.matveyvs.chitchatbot.botapi.BotState;
 import com.matveyvs.chitchatbot.botapi.callbackquery.CallbackQueryHandler;
+import com.matveyvs.chitchatbot.entity.UserEntity;
 import com.matveyvs.chitchatbot.service.KeyboardService;
 import com.matveyvs.chitchatbot.service.ReplyMessageService;
+import com.matveyvs.chitchatbot.service.UserService;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
+import org.telegram.telegrambots.meta.api.objects.User;
 
 import java.util.List;
+@Log4j2
 @Component
 public class StartCallbackQuery implements CallbackQueryHandler {
+    private final UserService userService;
     private final KeyboardService keyboardService;
     private final ReplyMessageService replyMessageService;
 
-    public StartCallbackQuery(KeyboardService keyboardService, ReplyMessageService replyMessageService) {
+    public StartCallbackQuery(UserService userService, KeyboardService keyboardService, ReplyMessageService replyMessageService) {
+        this.userService = userService;
         this.keyboardService = keyboardService;
         this.replyMessageService = replyMessageService;
     }
@@ -23,9 +31,17 @@ public class StartCallbackQuery implements CallbackQueryHandler {
         Integer callBackMessageId = callbackQuery.getMessage().getMessageId();
         Long chatId = callbackQuery.getMessage().getChatId();
         String callbackData = callbackQuery.getData();
+        User telegram = callbackQuery.getMessage().getFrom();
 
+        UserEntity userEntity = userService.findUserById(chatId);
 
         if (callbackData.equals("start")){
+            if(userEntity == null){
+                userEntity = new UserEntity(chatId, telegram.getFirstName(), telegram.getLastName(), telegram.getUserName(), "en-UK",false,false,0);
+                userEntity.setStateId(BotState.START.ordinal());
+                userService.saveUser(userEntity);
+                log.info("Add new user from CallbackQuery: {}", userEntity.toString());
+            }
             List<String> listOfButtons = List.of("Admin login", "User login");
             List<String> listOfBQueries = List.of("admin", "user");
             reply = replyMessageService

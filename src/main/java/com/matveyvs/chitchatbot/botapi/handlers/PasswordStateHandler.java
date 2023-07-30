@@ -35,7 +35,7 @@ public class PasswordStateHandler implements InputMessageHandler {
         UserEntity userEntity = userService.findUserById(chatId);
 
         if (messageText.equals(adminPassword)){
-            List<String> listOfButtons = List.of("Move to ADMIN SERVICE");
+            List<String> listOfButtons = List.of("Continue as ADMIN");
             List<String> listOfBQueries = List.of("adminservice");
             reply = replyMessageService
                     .getReplyMessage(chatId,
@@ -49,7 +49,6 @@ public class PasswordStateHandler implements InputMessageHandler {
                             "admin.unsuccessful.message",
                             keyboardService.getInlineKeyboard(listOfButtons,listOfBQueries));
         }
-
         userEntity.setStateId(BotState.START.ordinal());
         userService.saveUser(userEntity);
         return reply;

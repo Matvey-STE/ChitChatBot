@@ -2,9 +2,9 @@ package com.matveyvs.chitchatbot.botapi;
 
 import com.matveyvs.chitchatbot.botapi.callbackquery.CallbackQueryFacade;
 import com.matveyvs.chitchatbot.entity.UserEntity;
+import com.matveyvs.chitchatbot.service.ReplyMessageService;
 import com.matveyvs.chitchatbot.service.UserService;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -18,23 +18,32 @@ public class TelegramFacade {
     private final UserService userService;
     private final BotStateContext botStateContext;
     private final CallbackQueryFacade callbackQueryFacade;
+    private final ReplyMessageService replyMessageService;
 
-    public TelegramFacade(UserService userService, BotStateContext botStateContext, CallbackQueryFacade callbackQueryFacade) {
+    public TelegramFacade(UserService userService, BotStateContext botStateContext, CallbackQueryFacade callbackQueryFacade, ReplyMessageService replyMessageService) {
         this.userService = userService;
         this.botStateContext = botStateContext;
         this.callbackQueryFacade = callbackQueryFacade;
+        this.replyMessageService = replyMessageService;
     }
 
     public BotApiMethod<?> handleUpdate (Update update){
         SendMessage replyMessage = null;
 
         if (update.hasCallbackQuery()){
+            Long id = update.getCallbackQuery().getFrom().getId();
+            UserEntity userEntity = userService.findUserById(id);
             CallbackQuery callbackQuery = update.getCallbackQuery();
-            log.info("New CallbackQuery from: {} with data: {}",
-                    update.getCallbackQuery().getFrom().getUserName(),
-                    update.getCallbackQuery().getData());
-
-            replyMessage = callbackQueryFacade.processCallBackQuery(callbackQuery);
+            if (userEntity != null){
+                log.info("New CallbackQuery from: {} with data: {}",
+                        update.getCallbackQuery().getFrom().getUserName(),
+                        update.getCallbackQuery().getData());
+                replyMessage = callbackQueryFacade.processCallBackQuery(callbackQuery);
+            } else {
+                log.info("User entity is null");
+                callbackQuery.setData("start");
+                replyMessage = callbackQueryFacade.processCallBackQuery(callbackQuery);
+            }
             return replyMessage;
         }
 
@@ -49,20 +58,28 @@ public class TelegramFacade {
     private SendMessage handleInputMessage(Message message) {
         SendMessage reply;
         Long chatId = message.getFrom().getId();
+        String textFromMessage = message.getText();
         BotState botState = this.getUserStateByMessage(message);
+        Integer messageId = message.getMessageId();
+
         try {
             UserEntity  userEntity = userService.findUserById(chatId);
             if (userEntity != null) {
-//                log.info("User before return reply message : {} ", userEntity);
-                userEntity.setStateId(botState.ordinal());
-                userService.saveUser(userEntity);
-                System.out.println("User was saved");
+                log.info("User before return reply message : {} ", userEntity);
+                System.out.println("Handle input message");
             }
             reply = botStateContext.processInputMessage(botState, message);
         } catch (Exception e) {
             reply = new SendMessage(chatId.toString(),"Can`t handle update on state : " + botState);
             log.info("Can't handle state : {}", botState);
             e.printStackTrace();
+        }
+        //telegram bug when you create new chat. You have to have at least 2 messages
+        if (!textFromMessage.equals("/start")) {
+            replyMessageService.deleteMessage(chatId, messageId);
+            int i = messageId - 1;
+            replyMessageService.deleteMessage(chatId, messageId-1);
+            System.out.println("Previous message equals " + i);
         }
         return reply;
     }
@@ -95,7 +112,7 @@ public class TelegramFacade {
                 } else if (userEntity.getStateId() == BotState.ADMINPASSWORD.ordinal()) {
                     botState = BotState.ADMINPASSWORD;
                 } else if (userEntity.getStateId() == BotState.ADDUSER.ordinal()){
-                    botState = BotState.ADDUSER;
+                    botState = BotState.ADMIN;
                 } else {
                     botState = userService.findUserById(chatId) != null ? BotState.getValueByInteger(userEntity.getStateId()) : BotState.NONE;
                 }
