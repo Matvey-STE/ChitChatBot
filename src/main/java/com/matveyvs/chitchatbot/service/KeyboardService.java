@@ -26,5 +26,24 @@ public class KeyboardService {
         inlineKeyboardMarkup.setKeyboard(buttons);
         return inlineKeyboardMarkup;
     }
+    //todo try to remove duplicated code
+    public InlineKeyboardMarkup getInlineKeyboard(List<String> userNames){
+        InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
+        List<List<InlineKeyboardButton>> usersList = new ArrayList<>();
+        for (String userName : userNames) {
+            InlineKeyboardButton loginButton = new InlineKeyboardButton(userName);
+            loginButton.setCallbackData(userName);
+            List<InlineKeyboardButton> row = new ArrayList<>();
+            row.add(loginButton);
+            usersList.add(row);
+        }
+        InlineKeyboardButton returnButton = new InlineKeyboardButton("Return to ADMIN service");
+        returnButton.setCallbackData("adminservice");
+        List<InlineKeyboardButton> row = new ArrayList<>();
+        row.add(returnButton);
+        usersList.add(row);
 
+        inlineKeyboardMarkup.setKeyboard(usersList);
+        return inlineKeyboardMarkup;
+    }
 }

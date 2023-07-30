@@ -42,8 +42,8 @@ public class PasswordStateHandler implements InputMessageHandler {
                             "admin.successful.message",
                             keyboardService.getInlineKeyboard(listOfButtons,listOfBQueries));
         } else {
-            List<String> listOfButtons = List.of("Back to START");
-            List<String> listOfBQueries = List.of("start");
+            List<String> listOfButtons = List.of("Back to ADMIN");
+            List<String> listOfBQueries = List.of("admin");
             reply = replyMessageService
                     .getReplyMessage(chatId,
                             "admin.unsuccessful.message",

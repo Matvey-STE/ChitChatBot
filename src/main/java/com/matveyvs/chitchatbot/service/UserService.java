@@ -1,16 +1,21 @@
 package com.matveyvs.chitchatbot.service;
 
 import com.matveyvs.chitchatbot.botapi.BotState;
+import com.matveyvs.chitchatbot.entity.RegisteredUser;
 import com.matveyvs.chitchatbot.entity.UserEntity;
+import com.matveyvs.chitchatbot.entity.repository.RegisteredUsersRepository;
 import com.matveyvs.chitchatbot.entity.repository.UserEntityRepository;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 @Component
 public class UserService {
+    private final RegisteredUsersRepository registeredUsersRepository;
     private final UserEntityRepository userRepository;
-    public UserService(UserEntityRepository userRepository) {
+    public UserService(RegisteredUsersRepository registeredUsersRepository, UserEntityRepository userRepository) {
+        this.registeredUsersRepository = registeredUsersRepository;
         this.userRepository = userRepository;
     }
     @Transactional(readOnly = true)
@@ -39,5 +44,24 @@ public class UserService {
     }
     public void setUsersCurrentBotState(long chatId, BotState botState) {
         userRepository.setUserBotStateById(chatId,botState.ordinal());
+    }
+    public List<String> getAllRegisteredUsers(){
+        List<String> stringList = new ArrayList<>();
+        List<RegisteredUser> all = registeredUsersRepository.findAll();
+        for (RegisteredUser registeredUser : all) {
+            String userName = registeredUser.getUserName();
+            stringList.add(userName);
+        }
+        return stringList;
+    }
+    public void saveRegisteredUser(String userName){
+        RegisteredUser registeredUser = new RegisteredUser(userName);
+        registeredUsersRepository.save(registeredUser);
+    }
+    public void deleteRegisterUserByName(String userName){
+        registeredUsersRepository.deleteByUserName(userName);
+    }
+    public RegisteredUser getRegisterUserByName(String userName){
+       return registeredUsersRepository.findByUserName(userName);
     }
 }

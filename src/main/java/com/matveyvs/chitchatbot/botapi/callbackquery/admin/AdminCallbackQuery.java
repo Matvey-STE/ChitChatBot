@@ -42,9 +42,9 @@ public class AdminCallbackQuery implements CallbackQueryHandler {
         }
         if (callbackData.equals("adminservice")){
             List<String> listOfButtons = List
-                    .of("Add user", "Add admin", "List of users", "List of admins", "Return to start");
+                    .of("Add user", "List of users", "Return to start");
             List<String> listOfBQueries = List
-                    .of("adduser", "addadmin","listofusers","listofadmins", "start");
+                    .of("adduser","listofusers", "start");
 
             reply = new SendMessage();
             reply.setChatId(chatId);
@@ -60,11 +60,17 @@ public class AdminCallbackQuery implements CallbackQueryHandler {
             userEntity.setStateId(BotState.ADDUSER.ordinal());
             userService.saveUser(userEntity);
         }
+        if (callbackData.equals("listofusers")){
+            reply = new SendMessage();
+            reply.setChatId(chatId);
+            reply.setText(replyMessageService.getReplyText("reply.admin.users.list"));
+            reply.setReplyMarkup(keyboardService.getInlineKeyboard(userService.getAllRegisteredUsers()));
+        }
         replyMessageService.deleteMessage(chatId,callBackMessageId);
         return reply;
     }
     @Override
     public List<String> getHandlerQueryType() {
-        return List.of("admin","adminservice","adduser");
+        return List.of("admin","adminservice","adduser","listofusers");
     }
 }

@@ -1,6 +1,7 @@
 package com.matveyvs.chitchatbot.botapi;
 
 import com.matveyvs.chitchatbot.botapi.callbackquery.CallbackQueryFacade;
+import com.matveyvs.chitchatbot.entity.RegisteredUser;
 import com.matveyvs.chitchatbot.entity.UserEntity;
 import com.matveyvs.chitchatbot.service.ReplyMessageService;
 import com.matveyvs.chitchatbot.service.UserService;
@@ -112,6 +113,12 @@ public class TelegramFacade {
                 } else if (userEntity.getStateId() == BotState.ADMINPASSWORD.ordinal()) {
                     botState = BotState.ADMINPASSWORD;
                 } else if (userEntity.getStateId() == BotState.ADDUSER.ordinal()){
+                    RegisteredUser registerUserByName = userService.getRegisterUserByName(inputMessage);
+                    if (registerUserByName == null || !registerUserByName.getUserName().equals(inputMessage)){
+                        userService.saveRegisteredUser(inputMessage);
+                        log.info("New registered user {} was created",inputMessage);
+                    }
+                        log.info("User {} has already created",inputMessage);
                     botState = BotState.ADMIN;
                 } else {
                     botState = userService.findUserById(chatId) != null ? BotState.getValueByInteger(userEntity.getStateId()) : BotState.NONE;
