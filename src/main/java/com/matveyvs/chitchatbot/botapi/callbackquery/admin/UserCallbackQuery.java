@@ -1,12 +1,13 @@
 package com.matveyvs.chitchatbot.botapi.callbackquery.admin;
 
 import com.matveyvs.chitchatbot.botapi.callbackquery.CallbackQueryHandler;
+import com.matveyvs.chitchatbot.entity.UserEntity;
 import com.matveyvs.chitchatbot.service.KeyboardService;
 import com.matveyvs.chitchatbot.service.ReplyMessageService;
 import com.matveyvs.chitchatbot.service.UserService;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Component;
-import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
+import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
 
 import java.util.List;
@@ -23,21 +24,25 @@ public class UserCallbackQuery implements CallbackQueryHandler {
         this.replyMessageService = replyMessageService;
     }
     @Override
-    public SendMessage handleCallbackQuery(CallbackQuery callbackQuery) {
-        SendMessage reply = null;
+    public BotApiMethod<?> handleCallbackQuery(CallbackQuery callbackQuery) {
+        BotApiMethod<?> reply;
         Integer callBackMessageId = callbackQuery.getMessage().getMessageId();
         Long chatId = callbackQuery.getMessage().getChatId();
         String callbackData = callbackQuery.getData();
 
-        if (callbackData.equals("user")) {
+        UserEntity userEntity = userService.getUserById(chatId);
+        reply = replyMessageService
+                    .sendAnswerCallbackQuery("You unregistered user please ask ADMIN",true, callbackQuery);
+
+        if (callbackData.equals("user") && userEntity.isUserAccess()){
             List<String> listOfButtons = List.of("Return to START");
             List<String> listOfBQueries = List.of("start");
             reply = replyMessageService
                     .getReplyMessage(chatId,
                             "reply.user.message",
                             keyboardService.getInlineKeyboard(listOfButtons,listOfBQueries));
-        }
             replyMessageService.deleteMessage(chatId, callBackMessageId);
+        }
         return reply;
     }
 

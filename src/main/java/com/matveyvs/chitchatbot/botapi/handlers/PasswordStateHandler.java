@@ -31,8 +31,9 @@ public class PasswordStateHandler implements InputMessageHandler {
         SendMessage reply;
         long chatId = message.getChatId();
         String messageText = message.getText();
+        Integer messageId = message.getMessageId();
 
-        UserEntity userEntity = userService.findUserById(chatId);
+        UserEntity userEntity = userService.getUserById(chatId);
 
         if (messageText.equals(adminPassword)){
             List<String> listOfButtons = List.of("Continue as ADMIN");
@@ -49,11 +50,14 @@ public class PasswordStateHandler implements InputMessageHandler {
                             "admin.unsuccessful.message",
                             keyboardService.getInlineKeyboard(listOfButtons,listOfBQueries));
         }
+        //todo check if delete is working and not throwing exception
+        //remove 2 messages after inserting password
+        replyMessageService.deleteMessage(chatId, messageId);
+        replyMessageService.deleteMessage(chatId, messageId - 1);
         userEntity.setStateId(BotState.START.ordinal());
         userService.saveUser(userEntity);
         return reply;
     }
-
     @Override
     public BotState getHandlerName() {
         return BotState.ADMINPASSWORD;

@@ -29,7 +29,7 @@ public class RegisterCallbackQuery implements CallbackQueryHandler {
         Long chatId = callbackQuery.getMessage().getChatId();
         String callbackData = callbackQuery.getData();
 
-        UserEntity userEntity = userService.findUserById(chatId);
+        UserEntity userEntity = userService.getUserById(chatId);
 
         if (callbackData.equals("login")){
             reply = replyMessageService

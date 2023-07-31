@@ -30,7 +30,7 @@ public class StartCommandHandler implements InputMessageHandler{
         long chatId = message.getChatId();
         org.telegram.telegrambots.meta.api.objects.User telegram = message.getFrom();
 
-        UserEntity userEntity = userService.findUserById(chatId);
+        UserEntity userEntity = userService.getUserById(chatId);
 
         if (userEntity == null) {
             List<String> listOfButtons = List.of("LET'S BEGIN THE JOURNEY!");
@@ -41,10 +41,17 @@ public class StartCommandHandler implements InputMessageHandler{
                             keyboardService.getInlineKeyboard(listOfButtons,listOfBQueries));
 
             userEntity = new UserEntity(chatId, telegram.getFirstName(), telegram.getLastName(), telegram.getUserName(), "en-UK",false,false,0);
-            userEntity.setStateId(BotState.START.ordinal());
-            userService.saveUser(userEntity);
-            log.info("Add new user: {}", userEntity.toString());
 
+            userEntity.setStateId(BotState.START.ordinal());
+            log.info("Add new user from StartCommandHandler: {}", userEntity.toString());
+
+            //set isUser to true if user has already created by userName
+            if (userService.isUserInListRegisteredUser(userEntity.getUserName())){
+                userEntity.setUserAccess(true);
+            }
+            log.info("User {} was checked if he has access", message.getChat().getUserName());
+            System.out.println(userEntity.isUserAccess());
+            userService.saveUser(userEntity);
         } else {
             List<String> listOfButtons = List.of("LET'S BEGIN THE JOURNEY!");
             List<String> listOfBQueries = List.of("start");

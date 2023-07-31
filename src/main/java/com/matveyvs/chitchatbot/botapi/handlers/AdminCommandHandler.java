@@ -27,20 +27,27 @@ public class AdminCommandHandler implements InputMessageHandler{
     public SendMessage handle(Message message) {
         SendMessage reply = null;
         long chatId = message.getChatId();
+        Integer messageId = message.getMessageId();
 
-        UserEntity userEntity = userService.findUserById(chatId);
-
+        UserEntity userEntity = userService.getUserById(chatId);
+        System.out.println(userEntity.toString());
         if (userEntity.getStateId() == BotState.ADDUSER.ordinal()){
-            List<String> listOfButtons = List.of("Show list of USERS","Add USER","Return to ADMIN service");
-            List<String> listOfBQueries = List.of("listofusers","adduser","adminservice");
+            List<String> listOfButtons = List.of("Add USER","Show list of USERS","Return to ADMIN service");
+            List<String> listOfBQueries = List.of("adduser","listofusers","adminservice");
             reply = replyMessageService
                     .getReplyMessage(chatId,
                             "admin.successful.adduser.message",
                             keyboardService.getInlineKeyboard(listOfButtons,listOfBQueries));
 
-            List<String> listOfUsers = userService.getAllRegisteredUsers();
-            listOfUsers.forEach(System.out::println);
+            //todo make sure that it works for many users
+            replyMessageService.deleteMessage(chatId, messageId);
+            replyMessageService.deleteMessage(chatId,messageId-1);
 
+            if(userService.isUserInListRegisteredUser(userEntity.getUserName())) {
+                userEntity.setUserAccess(true);
+            }
+            System.out.println(userEntity.isUserAccess());
+            log.info("User {} was checked if he has access", message.getChat().getUserName());
             userEntity.setStateId(BotState.START.ordinal());
             userService.saveUser(userEntity);
         }

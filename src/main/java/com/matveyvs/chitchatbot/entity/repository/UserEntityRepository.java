@@ -14,6 +14,7 @@ import java.util.List;
 public interface UserEntityRepository extends JpaRepository<UserEntity, Long> {
     List<UserEntity> findAll();
     UserEntity findByChatId (Long chatId);
+    UserEntity findByUserName(String username);
     void deleteByChatId (Long chatId);
     void deleteByUserName (String userName);
     @Query(value = "SELECT STATE_ID FROM USERS WHERE CHAT_ID = :chatId",nativeQuery = true)

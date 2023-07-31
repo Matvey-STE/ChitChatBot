@@ -94,7 +94,7 @@ public class WebHookBotService extends TelegramWebhookBot {
                     case ADMIN -> {
                         //user registration test todo
 
-                        UserEntity userEntity = userService.findUserById(chatId);
+                        UserEntity userEntity = userService.getUserById(chatId);
                         if (userEntity == null){
                             userEntity = new UserEntity(chatId,chat.getFirstName(),chat.getLastName(), chat.getUserName(),
                             "en-UK",false,false,0);
@@ -249,7 +249,6 @@ public class WebHookBotService extends TelegramWebhookBot {
             throw new RuntimeException(e);
         }
     }
-
     @Override
     public String getBotPath() {
         return webHookPath;

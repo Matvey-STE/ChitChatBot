@@ -29,7 +29,7 @@ public class AdminCallbackQuery implements CallbackQueryHandler {
         Long chatId = callbackQuery.getMessage().getChatId();
         String callbackData = callbackQuery.getData();
 
-        UserEntity userEntity = userService.findUserById(chatId);
+        UserEntity userEntity = userService.getUserById(chatId);
 
         if (callbackData.equals("admin")){
             List<String> listOfButtons = List.of("Login", "Create Password", "Return to start");
@@ -42,7 +42,7 @@ public class AdminCallbackQuery implements CallbackQueryHandler {
         }
         if (callbackData.equals("adminservice")){
             List<String> listOfButtons = List
-                    .of("Add user", "List of users", "Return to start");
+                    .of( "Add user","List of users", "Return to start");
             List<String> listOfBQueries = List
                     .of("adduser","listofusers", "start");
 
@@ -64,6 +64,7 @@ public class AdminCallbackQuery implements CallbackQueryHandler {
             reply = new SendMessage();
             reply.setChatId(chatId);
             reply.setText(replyMessageService.getReplyText("reply.admin.users.list"));
+            reply.setParseMode("HTML");
             reply.setReplyMarkup(keyboardService.getInlineKeyboard(userService.getAllRegisteredUsers()));
         }
         replyMessageService.deleteMessage(chatId,callBackMessageId);

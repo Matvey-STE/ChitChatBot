@@ -31,17 +31,18 @@ public class StartCallbackQuery implements CallbackQueryHandler {
         Integer callBackMessageId = callbackQuery.getMessage().getMessageId();
         Long chatId = callbackQuery.getMessage().getChatId();
         String callbackData = callbackQuery.getData();
-        User telegram = callbackQuery.getMessage().getFrom();
+        User telegram = callbackQuery.getFrom();
 
-        UserEntity userEntity = userService.findUserById(chatId);
+        UserEntity userEntity = userService.getUserById(chatId);
+
+        if(userEntity == null){
+            userEntity = new UserEntity(chatId, telegram.getFirstName(), telegram.getLastName(), telegram.getUserName(), "en-UK",false,false,0);
+            userEntity.setStateId(BotState.START.ordinal());
+            userService.saveUser(userEntity);
+            log.info("Add new user from StartCallbackQuery: {}", userEntity.toString());
+        }
 
         if (callbackData.equals("start")){
-            if(userEntity == null){
-                userEntity = new UserEntity(chatId, telegram.getFirstName(), telegram.getLastName(), telegram.getUserName(), "en-UK",false,false,0);
-                userEntity.setStateId(BotState.START.ordinal());
-                userService.saveUser(userEntity);
-                log.info("Add new user from CallbackQuery: {}", userEntity.toString());
-            }
             List<String> listOfButtons = List.of("Admin login", "User login");
             List<String> listOfBQueries = List.of("admin", "user");
             reply = replyMessageService

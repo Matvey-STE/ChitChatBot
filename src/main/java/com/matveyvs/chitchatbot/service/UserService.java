@@ -19,9 +19,10 @@ public class UserService {
         this.userRepository = userRepository;
     }
     @Transactional(readOnly = true)
-    public UserEntity findUserById (Long chatId) {
+    public UserEntity getUserById(Long chatId) {
         return userRepository.findByChatId(chatId);
     }
+    public UserEntity getUserByUserName(String userName) {return userRepository.findByUserName(userName);}
     public void deleteUserByUserName (String userName){
         userRepository.deleteByUserName(userName);
     }
@@ -45,6 +46,7 @@ public class UserService {
     public void setUsersCurrentBotState(long chatId, BotState botState) {
         userRepository.setUserBotStateById(chatId,botState.ordinal());
     }
+    // User registration table of users
     public List<String> getAllRegisteredUsers(){
         List<String> stringList = new ArrayList<>();
         List<RegisteredUser> all = registeredUsersRepository.findAll();
@@ -63,5 +65,13 @@ public class UserService {
     }
     public RegisteredUser getRegisterUserByName(String userName){
        return registeredUsersRepository.findByUserName(userName);
+    }
+    public boolean isUserInListRegisteredUser(String userName){
+        List <String> listOfNames = getAllRegisteredUsers();
+        listOfNames.forEach(System.out::println);
+        System.out.println("From user service: " + userName);
+        boolean b = listOfNames.stream().anyMatch(name -> name.equals(userName));
+        System.out.println("From user service: " + b);
+        return b;
     }
 }
