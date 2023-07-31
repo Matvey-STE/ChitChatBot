@@ -16,6 +16,7 @@ public interface UserEntityRepository extends JpaRepository<UserEntity, Long> {
     UserEntity findByChatId (Long chatId);
     UserEntity findByUserName(String username);
     void deleteByChatId (Long chatId);
+    @Transactional
     void deleteByUserName (String userName);
     @Query(value = "SELECT STATE_ID FROM USERS WHERE CHAT_ID = :chatId",nativeQuery = true)
     int getUserBotStateById(Long chatId);

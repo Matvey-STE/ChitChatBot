@@ -55,28 +55,17 @@ public class TelegramFacade {
     private SendMessage handleInputMessage(Message message) {
         SendMessage reply;
         Long chatId = message.getFrom().getId();
-        String textFromMessage = message.getText();
         BotState botState = this.getUserStateByMessage(message);
         try {
             UserEntity  userEntity = userService.getUserById(chatId);
             if (userEntity != null) {
                 log.info("User before return reply message : {} ", userEntity);
-                System.out.println("Handle input message");
             }
             reply = botStateContext.processInputMessage(botState, message);
         } catch (Exception e) {
             reply = new SendMessage(chatId.toString(),"Can`t handle update on state : " + botState);
-            log.info("Can't handle state : {}", botState);
+            log.error("Can't handle state : {}", botState);
             e.printStackTrace();
-        }
-        //telegram bug when you create new chat. You have to have at least 2 messages
-        if (!textFromMessage.equals("/start")) {
-            //todo make sure that it works for more that one user
-            log.info("message");
-//            replyMessageService.deleteMessage(chatId, messageId);
-//            int i = messageId - 1;
-//            replyMessageService.deleteMessage(chatId, messageId-1);
-//            System.out.println("Previous message equals " + i);
         }
         return reply;
     }

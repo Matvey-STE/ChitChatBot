@@ -35,14 +35,6 @@ public class UserService {
     public void saveUser (UserEntity userEntity){
         userRepository.save(userEntity);
     }
-    //todo create special methods for userService
-    public BotState getIndexOfUserCurrentBotState(long chatId) {
-        int botStateFromDb = userRepository.getUserBotStateById(chatId);
-        if (botStateFromDb == 0){
-            botStateFromDb = BotState.START.ordinal();
-        }
-        return BotState.getValueByInteger(botStateFromDb);
-    }
     public void setUsersCurrentBotState(long chatId, BotState botState) {
         userRepository.setUserBotStateById(chatId,botState.ordinal());
     }
@@ -68,10 +60,6 @@ public class UserService {
     }
     public boolean isUserInListRegisteredUser(String userName){
         List <String> listOfNames = getAllRegisteredUsers();
-        listOfNames.forEach(System.out::println);
-        System.out.println("From user service: " + userName);
-        boolean b = listOfNames.stream().anyMatch(name -> name.equals(userName));
-        System.out.println("From user service: " + b);
-        return b;
+        return listOfNames.stream().anyMatch(name -> name.equals(userName));
     }
 }
