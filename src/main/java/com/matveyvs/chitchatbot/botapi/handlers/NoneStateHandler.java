@@ -20,7 +20,8 @@ public class NoneStateHandler implements InputMessageHandler{
     public SendMessage handle(Message message) {
         Long chat_id = message.getChatId();
         log.info("Handle " + BotState.NONE);
-        return replyMessageService.getReplyMessage(chat_id,"reply.user.new");
+        return replyMessageService
+                .getReplyMessage(chat_id, replyMessageService.getLocaleText("reply.user.new"));
     }
     @Override
     public BotState getHandlerName() {

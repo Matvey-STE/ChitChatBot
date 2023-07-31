@@ -33,8 +33,7 @@ public class RegisterCallbackQuery implements CallbackQueryHandler {
 
         if (callbackData.equals("login")){
             reply = replyMessageService
-                    .getReplyMessage(chatId,
-                            "admin.password.question");
+                    .getReplyMessage(chatId, replyMessageService.getLocaleText("admin.password.question"));
 
             userEntity.setStateId(BotState.ADMINPASSWORD.ordinal());
             userService.saveUser(userEntity);
@@ -43,8 +42,7 @@ public class RegisterCallbackQuery implements CallbackQueryHandler {
             List<String> listOfButtons = List.of("Return to START");
             List<String> listOfBQueries = List.of("start");
             reply = replyMessageService
-                    .getReplyMessage(chatId,
-                            "admin.generate.admin.password.message",
+                    .getReplyMessage(chatId, replyMessageService.getLocaleText("admin.generate.admin.password.message"),
                             keyboardService.getInlineKeyboard(listOfButtons,listOfBQueries));
         }
         replyMessageService.deleteMessage(chatId,callBackMessageId);

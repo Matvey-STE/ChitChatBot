@@ -29,23 +29,34 @@ public class UserCallbackQuery implements CallbackQueryHandler {
         Integer callBackMessageId = callbackQuery.getMessage().getMessageId();
         Long chatId = callbackQuery.getMessage().getChatId();
         String callbackData = callbackQuery.getData();
-
         UserEntity userEntity = userService.getUserById(chatId);
         reply = replyMessageService
                     .sendAnswerCallbackQuery("You unregistered user please ask ADMIN",true, callbackQuery);
 
-        if (callbackData.equals("user") && userEntity.isUserAccess()){
-            List<String> listOfButtons = List.of("Return to START");
-            List<String> listOfBQueries = List.of("start");
+        if (callbackData.equals("user")
+                //todo test user needed to add after
+//                && userEntity.isUserAccess()
+        ){
+            List<String> listOfButtons = List.of("Best Definition TASK","Return to START");
+            List<String> listOfBQueries = List.of("bestdefinitiontask","start");
+            reply = replyMessageService
+                    .getReplyMessage(chatId, replyMessageService.getLocaleText("reply.user.message"),
+                            keyboardService.getInlineKeyboard(listOfButtons,listOfBQueries));
+            log.info("Delete message callbackData user");
+            replyMessageService.deleteMessage(chatId, callBackMessageId);
+        }
+/*        if (callbackData.equals("bestdefinition") && userEntity.isUserAccess()){
+            List<String> listOfButtons = List.of("Best Definition TASK","Return to START");
+            List<String> listOfBQueries = List.of("bestdefinitiontask","start");
             reply = replyMessageService
                     .getReplyMessage(chatId,
                             "reply.user.message",
                             keyboardService.getInlineKeyboard(listOfButtons,listOfBQueries));
             replyMessageService.deleteMessage(chatId, callBackMessageId);
-        }
+        }*/
+
         return reply;
     }
-
     @Override
     public List<String> getHandlerQueryType() {
         return List.of("user");

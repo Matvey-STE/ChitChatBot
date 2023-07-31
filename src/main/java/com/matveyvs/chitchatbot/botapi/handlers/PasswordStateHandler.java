@@ -39,15 +39,13 @@ public class PasswordStateHandler implements InputMessageHandler {
             List<String> listOfButtons = List.of("Continue as ADMIN");
             List<String> listOfBQueries = List.of("adminservice");
             reply = replyMessageService
-                    .getReplyMessage(chatId,
-                            "admin.successful.message",
+                    .getReplyMessage(chatId, replyMessageService.getLocaleText("admin.successful.message"),
                             keyboardService.getInlineKeyboard(listOfButtons,listOfBQueries));
         } else {
             List<String> listOfButtons = List.of("Back to ADMIN");
             List<String> listOfBQueries = List.of("admin");
             reply = replyMessageService
-                    .getReplyMessage(chatId,
-                            "admin.unsuccessful.message",
+                    .getReplyMessage(chatId, replyMessageService.getLocaleText("admin.unsuccessful.message"),
                             keyboardService.getInlineKeyboard(listOfButtons,listOfBQueries));
         }
         //todo check if delete is working and not throwing exception

@@ -46,8 +46,7 @@ public class StartCallbackQuery implements CallbackQueryHandler {
             List<String> listOfButtons = List.of("Admin login", "User login");
             List<String> listOfBQueries = List.of("admin", "user");
             reply = replyMessageService
-                    .getReplyMessage(chatId,
-                            "reply.access.ask",
+                    .getReplyMessage(chatId, replyMessageService.getLocaleText("reply.access.ask"),
                             keyboardService.getInlineKeyboard(listOfButtons,listOfBQueries));
         }
         replyMessageService.deleteMessage(chatId,callBackMessageId);

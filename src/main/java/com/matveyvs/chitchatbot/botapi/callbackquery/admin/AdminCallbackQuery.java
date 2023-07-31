@@ -39,7 +39,7 @@ public class AdminCallbackQuery implements CallbackQueryHandler {
 
             reply = new SendMessage();
             reply.setChatId(chatId);
-            reply.setText(replyMessageService.getReplyText("reply.admin.keyboard.message"));
+            reply.setText(replyMessageService.getLocaleText("reply.admin.keyboard.message"));
             reply.setReplyMarkup(keyboardService.getInlineKeyboard(listOfButtons,listOfBQueries));
         }
         if (callbackData.equals("adminservice")){
@@ -50,14 +50,13 @@ public class AdminCallbackQuery implements CallbackQueryHandler {
 
             reply = new SendMessage();
             reply.setChatId(chatId);
-            reply.setText(replyMessageService.getReplyText("reply.admin.keyboard.message"));
+            reply.setText(replyMessageService.getLocaleText("reply.admin.keyboard.message"));
             reply.setReplyMarkup(keyboardService.getInlineKeyboard(listOfButtons,listOfBQueries));
 
         }
         if (callbackData.equals("adduser")){
             reply = replyMessageService
-                    .getReplyMessage(chatId,
-                            "admin.adduser.question");
+                    .getReplyMessage(chatId, replyMessageService.getLocaleText("admin.adduser.question"));
 
             userEntity.setStateId(BotState.ADDUSER.ordinal());
             userService.saveUser(userEntity);
@@ -65,7 +64,7 @@ public class AdminCallbackQuery implements CallbackQueryHandler {
         if (callbackData.equals("listofusers")){
             reply = new SendMessage();
             reply.setChatId(chatId);
-            reply.setText(replyMessageService.getReplyText("reply.admin.users.list"));
+            reply.setText(replyMessageService.getLocaleText("reply.admin.users.list"));
             reply.setParseMode("HTML");
             reply.setReplyMarkup(keyboardService.getInlineKeyboard(userService.getAllRegisteredUsers()));
         }
@@ -85,7 +84,7 @@ public class AdminCallbackQuery implements CallbackQueryHandler {
 
                 reply = new SendMessage();
                 reply.setChatId(chatId);
-                reply.setText(replyMessageService.getReplyText("reply.admin.remove.user"));
+                reply.setText(replyMessageService.getLocaleText("reply.admin.remove.user"));
                 reply.setParseMode("HTML");
                 reply.setReplyMarkup(keyboardService.getInlineKeyboard(listOfButtons,listOfBQueries));
                 break;

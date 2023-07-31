@@ -35,8 +35,7 @@ public class AdminCommandHandler implements InputMessageHandler{
             List<String> listOfButtons = List.of("Add USER","Show list of USERS","Return to ADMIN service");
             List<String> listOfBQueries = List.of("adduser","listofusers","adminservice");
             reply = replyMessageService
-                    .getReplyMessage(chatId,
-                            "admin.successful.adduser.message",
+                    .getReplyMessage(chatId, replyMessageService.getLocaleText("admin.successful.adduser.message"),
                             keyboardService.getInlineKeyboard(listOfButtons,listOfBQueries));
 
             //todo make sure that it works for many users

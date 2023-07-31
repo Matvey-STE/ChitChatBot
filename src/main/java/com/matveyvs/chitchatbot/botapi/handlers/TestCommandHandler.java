@@ -76,7 +76,7 @@ public class TestCommandHandler implements InputMessageHandler{
         return inlineKeyboardMarkup;
     }
     private String createMessageTaskConstructor(String word, List<String> listOfAnswers){
-        StringBuilder builder = new StringBuilder(replyMessageService.getReplyText("reply.test.message"));
+        StringBuilder builder = new StringBuilder(replyMessageService.getLocaleText("reply.test.message"));
         builder.append("\n\n <b>")
                 .append(word.toUpperCase())
                 .append("</b> \n\n");

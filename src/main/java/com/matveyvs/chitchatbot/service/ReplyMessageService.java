@@ -24,19 +24,19 @@ public class ReplyMessageService {
     public SendMessage getReplyMessage(Long chatId, String message){
         SendMessage sendMessage = new SendMessage();
         sendMessage.setChatId(chatId);
-        sendMessage.setText(localeMessageService.getMessage(message));
+        sendMessage.setText(message);
         sendMessage.setParseMode("HTML");
         return sendMessage;
     }
     public SendMessage getReplyMessage(Long chatId, String message, InlineKeyboardMarkup inlineKeyboard){
         SendMessage sendMessage = new SendMessage();
         sendMessage.setChatId(chatId);
-        sendMessage.setText(localeMessageService.getMessage(message));
+        sendMessage.setText(message);
         sendMessage.setReplyMarkup(inlineKeyboard);
         sendMessage.setParseMode("HTML");
         return sendMessage;
     }
-    public String getReplyText(String replyMessage){
+    public String getLocaleText(String replyMessage){
         return localeMessageService.getMessage(replyMessage);
     }
     public void deleteMessage(Long chatId, Integer messageId){

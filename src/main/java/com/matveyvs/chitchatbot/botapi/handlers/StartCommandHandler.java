@@ -36,8 +36,7 @@ public class StartCommandHandler implements InputMessageHandler{
             List<String> listOfButtons = List.of("LET'S BEGIN THE JOURNEY!");
             List<String> listOfBQueries = List.of("start");
             reply = replyMessageService
-                    .getReplyMessage(chatId,
-                            "reply.access.ask",
+                    .getReplyMessage(chatId, replyMessageService.getLocaleText("reply.access.ask"),
                             keyboardService.getInlineKeyboard(listOfButtons,listOfBQueries));
 
             userEntity = new UserEntity(chatId, telegram.getFirstName(), telegram.getLastName(), telegram.getUserName(), "en-UK",false,false,0);
@@ -50,14 +49,12 @@ public class StartCommandHandler implements InputMessageHandler{
                 userEntity.setUserAccess(true);
             }
             log.info("User {} was checked if he has access", message.getChat().getUserName());
-            System.out.println(userEntity.isUserAccess());
             userService.saveUser(userEntity);
         } else {
             List<String> listOfButtons = List.of("LET'S BEGIN THE JOURNEY!");
             List<String> listOfBQueries = List.of("start");
             reply = replyMessageService
-                    .getReplyMessage(chatId,
-                            "reply.hello.registered",
+                    .getReplyMessage(chatId, replyMessageService.getLocaleText("reply.hello.registered"),
                             keyboardService.getInlineKeyboard(listOfButtons,listOfBQueries));
 
             userEntity.setStateId(BotState.START.ordinal());
