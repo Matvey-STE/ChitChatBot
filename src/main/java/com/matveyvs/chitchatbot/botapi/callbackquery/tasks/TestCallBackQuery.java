@@ -18,7 +18,7 @@ import java.util.List;
 @Log4j2
 @Component
 public class TestCallBackQuery implements CallbackQueryHandler {
-    private final List<String> callBackQueriesList = new ArrayList<>();
+    private List<String> callBackQueriesList = new ArrayList<>();
     private final BestDefinitionService bestDefinitionService;
     private final ReplyMessageService replyMessageService;
 
@@ -34,56 +34,39 @@ public class TestCallBackQuery implements CallbackQueryHandler {
         Integer callBackMessageId = message.getMessageId();
         Long chatId = message.getChatId();
         String callbackData = callbackQuery.getData();
+//        use it for queries creation and if class changed
+        String className = this.getClass().getSimpleName();
+
         if (callbackData.equals("bestdefinitiontask")){
-            createAndSaveBestDefinitionTest();
+            testCreateAndSaveBestDefinition();
             BestDefinition bestDefinition = bestDefinitionService.findBestDefinitionTaskById(1);
+
             String wordOfTask = bestDefinition.getTaskWord();
             List<String> listOfAnswers = bestDefinition.getListOfAnswers();
+
+            callBackQueriesList = createButtonQueries(className, listOfAnswers.size());
+
             reply = replyMessageService
                     .getReplyMessage(chatId, createMessageTaskConstructor(wordOfTask, listOfAnswers),
                             createTaskMessageWithButtons(listOfAnswers));
-
         }
-
-        log.info("Delete message before creation");
-        replyMessageService.deleteMessage(chatId,callBackMessageId);
-
-        Integer rightButton = bestDefinitionService.getIndexOfRightAnswer(1);
-        //todo test different buttons
-        if (callbackData.contains("testButton 1")){
-            reply = replyMessageService.sendAnswerCallbackQuery("Right answer",true, callbackQuery);
-        } else if (callbackData.contains("testButton 2") || callbackData.equals("testButton 3")){
-            reply = replyMessageService.sendAnswerCallbackQuery("Wrong answer",true, callbackQuery);
+        if (callbackData.contains(className)){
+            int rightButton = bestDefinitionService.getIndexOfRightAnswer(1);
+            if (callbackData.contains(String.valueOf(rightButton))){
+                reply = replyMessageService.sendAnswerCallbackQuery("Right answer",true, callbackQuery);
+                log.info("Delete message before creation");
+                replyMessageService.deleteMessage(chatId,callBackMessageId);
+            } else {
+                reply = replyMessageService.sendAnswerCallbackQuery("Wrong answer",true, callbackQuery);
+            }
         }
-
         return reply;
     }
     @Override
     public List<String> getHandlerQueryType() {
-        List<String> listOfQueries = callBackQueriesList;
+        List<String> listOfQueries = new ArrayList<>(callBackQueriesList);
         listOfQueries.add("bestdefinitiontask");
         return listOfQueries;
-    }
-
-    private void createAndSaveBestDefinitionTest(){
-        String word = "soak (v.)";
-        String rightAnswer = "leave something in liquid, especially to clean it or make it softer";
-        List<String> stringList = new ArrayList<>();
-        stringList.add("remove liquid from the surface by pressing a piece of soft paper or cloth onto it");
-        stringList.add("use water to clean the soap or dirt from something");
-        stringList.add("leave something in liquid, especially to clean it or make it softer");
-        Collections.shuffle(stringList);
-
-
-        BestDefinition bestDefinition = new BestDefinition(word,rightAnswer,3,stringList);
-        bestDefinition.setIndexOfRightAnswer(indexOfRightAnswer(rightAnswer, stringList));
-
-        bestDefinitionService.saveBestDefinitionTask(bestDefinition);
-/*        List<BestDefinition> list = bestDefinitionService.getAllBestDefinitions();
-        list.forEach(System.out::println);*/
-    }
-    private int indexOfRightAnswer(String rightAnswer, List<String> listOfAnswers){
-        return listOfAnswers.indexOf(rightAnswer) + 1;
     }
     private String createMessageTaskConstructor(String word, List<String> listOfAnswers){
         StringBuilder builder = new StringBuilder("<b>Testing message</b>\n" +
@@ -99,11 +82,16 @@ public class TestCallBackQuery implements CallbackQueryHandler {
         }
         return builder.toString();
     }
-    private InlineKeyboardMarkup createTaskMessageWithButtons(List<String> listOfAnswers){
-        if (!callBackQueriesList.isEmpty()){
-            callBackQueriesList.clear();
+    private List<String> createButtonQueries(String nameOfQuery, int amountOfButtons){
+        List<String> listOfQueries = new ArrayList<>();
+        for (int i = 1; i <= amountOfButtons; i++){
+            listOfQueries.add(nameOfQuery + i);
         }
+        return listOfQueries;
+    }
+    private InlineKeyboardMarkup createTaskMessageWithButtons(List<String> listOfAnswers){
         int listSize = listOfAnswers.size();
+
         int amountOfRows = listSize/5 + 1;
         //remainder of division
         int remainder = listSize%5;
@@ -112,12 +100,11 @@ public class TestCallBackQuery implements CallbackQueryHandler {
         List<List<InlineKeyboardButton>> rows = new ArrayList<>();
         for (int i = 0; i < amountOfRows; i++){
             List<InlineKeyboardButton> row = new ArrayList<>();
-
+            String className = this.getClass().getSimpleName();
             if (listSize >=5){
                 for (int counter = 0; counter < 5; counter++){
                     numberOfButton++;
-                    nameOfButton = "testButton " + numberOfButton;
-                    callBackQueriesList.add(nameOfButton);
+                    nameOfButton = className + numberOfButton;
                     InlineKeyboardButton inlineKeyboardButton = new InlineKeyboardButton();
                     inlineKeyboardButton.setCallbackData(nameOfButton);
                     inlineKeyboardButton.setText(String.valueOf(numberOfButton));
@@ -127,8 +114,7 @@ public class TestCallBackQuery implements CallbackQueryHandler {
             } else {
                 for (int counter = 0; counter < remainder; counter++){
                     numberOfButton++;
-                    nameOfButton = "testButton " + numberOfButton;
-                    callBackQueriesList.add(nameOfButton);
+                    nameOfButton = className + numberOfButton;
                     InlineKeyboardButton inlineKeyboardButton = new InlineKeyboardButton();
                     inlineKeyboardButton.setCallbackData(nameOfButton);
                     inlineKeyboardButton.setText(String.valueOf(numberOfButton));
@@ -143,5 +129,22 @@ public class TestCallBackQuery implements CallbackQueryHandler {
         return inlineKeyboardMarkup;
     }
 
+    private void testCreateAndSaveBestDefinition(){
+        String word = "soak (v.)";
+        String rightAnswer = "leave something in liquid, especially to clean it or make it softer";
+        List<String> stringList = new ArrayList<>();
+        stringList.add("remove liquid from the surface by pressing a piece of soft paper or cloth onto it");
+        stringList.add("use water to clean the soap or dirt from something");
+        stringList.add("leave something in liquid, especially to clean it or make it softer");
+        Collections.shuffle(stringList);
+
+        int indexOfRightAnswer = indexOfRightAnswer(rightAnswer, stringList);
+        BestDefinition bestDefinition = new BestDefinition(word,rightAnswer,indexOfRightAnswer,stringList);
+
+        bestDefinitionService.saveBestDefinitionTask(bestDefinition);
+    }
+    private int indexOfRightAnswer(String rightAnswer, List<String> listOfAnswers){
+        return listOfAnswers.indexOf(rightAnswer) + 1;
+    }
 
 }

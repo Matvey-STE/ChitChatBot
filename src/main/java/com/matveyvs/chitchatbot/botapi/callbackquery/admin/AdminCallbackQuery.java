@@ -24,6 +24,7 @@ public class AdminCallbackQuery implements CallbackQueryHandler {
         this.replyMessageService = replyMessageService;
         this.userService = userService;
     }
+
     @Override
     public SendMessage handleCallbackQuery(CallbackQuery callbackQuery) {
         SendMessage reply = null;
