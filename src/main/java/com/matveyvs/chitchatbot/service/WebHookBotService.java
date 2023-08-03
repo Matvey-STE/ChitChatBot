@@ -249,6 +249,14 @@ public class WebHookBotService extends TelegramWebhookBot {
             throw new RuntimeException(e);
         }
     }
+    public void sendAnswerMessage(SendMessage sendMessage) {
+        try {
+            execute(sendMessage);
+        } catch (TelegramApiException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     @Override
     public String getBotPath() {
         return webHookPath;
