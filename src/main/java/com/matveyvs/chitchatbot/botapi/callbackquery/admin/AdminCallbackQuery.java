@@ -3,6 +3,7 @@ package com.matveyvs.chitchatbot.botapi.callbackquery.admin;
 import com.matveyvs.chitchatbot.botapi.BotState;
 import com.matveyvs.chitchatbot.botapi.callbackquery.CallbackQueryHandler;
 import com.matveyvs.chitchatbot.entity.UserEntity;
+import com.matveyvs.chitchatbot.enums.Queries;
 import com.matveyvs.chitchatbot.service.KeyboardService;
 import com.matveyvs.chitchatbot.service.ReplyMessageService;
 import com.matveyvs.chitchatbot.service.UserService;
@@ -34,35 +35,39 @@ public class AdminCallbackQuery implements CallbackQueryHandler {
 
         UserEntity userEntity = userService.getUserById(chatId);
 
-        if (callbackData.equals("admin")){
+        if (callbackData.equals(Queries.ADMIN.getValue())){
             List<String> listOfButtons = List.of("Login", "Create Password", "Return to start");
-            List<String> listOfBQueries = List.of("login", "password", "start");
+            List<String> listOfBQueries =
+                    List.of(Queries.LOGIN.getValue(),
+                            Queries.PASSWORD.getValue(),
+                            Queries.START.getValue());
 
             reply = new SendMessage();
             reply.setChatId(chatId);
             reply.setText(replyMessageService.getLocaleText("reply.admin.keyboard.message"));
             reply.setReplyMarkup(keyboardService.getInlineKeyboard(listOfButtons,listOfBQueries));
         }
-        if (callbackData.equals("adminservice")){
+        if (callbackData.equals(Queries.ADMINSERVICE.getValue())){
             List<String> listOfButtons = List
                     .of( "Add user","List of users", "Return to start");
-            List<String> listOfBQueries = List
-                    .of("adduser","listofusers", "start");
+            List<String> listOfBQueries =
+                    List.of(Queries.ADDUSER.getValue(),
+                            Queries.LISTOFUSERS.getValue(),
+                            Queries.START.getValue());
 
             reply = new SendMessage();
             reply.setChatId(chatId);
             reply.setText(replyMessageService.getLocaleText("reply.admin.keyboard.message"));
             reply.setReplyMarkup(keyboardService.getInlineKeyboard(listOfButtons,listOfBQueries));
-
         }
-        if (callbackData.equals("adduser")){
+        if (callbackData.equals(Queries.ADDUSER.getValue())){
             reply = replyMessageService
                     .getReplyMessage(chatId, replyMessageService.getLocaleText("admin.adduser.question"));
 
             userEntity.setStateId(BotState.ADDUSER.ordinal());
             userService.saveUser(userEntity);
         }
-        if (callbackData.equals("listofusers")){
+        if (callbackData.equals(Queries.LISTOFUSERS.getValue())){
             reply = new SendMessage();
             reply.setChatId(chatId);
             reply.setText(replyMessageService.getLocaleText("reply.admin.users.list"));
@@ -75,7 +80,7 @@ public class AdminCallbackQuery implements CallbackQueryHandler {
             if (callbackData.equals(userName)){
                 List<String> listOfButtons = List
                         .of("List of users", "Return to ADMIN service");
-                List<String> listOfBQueries = List.of("listofusers", "adminservice");
+                List<String> listOfBQueries = List.of(Queries.LISTOFUSERS.getValue(), Queries.ADMINSERVICE.getValue());
 
                 userService.deleteRegisterUserByName(callbackData);
                 //it removes user from his NOT only db but from his access completely
@@ -98,7 +103,11 @@ public class AdminCallbackQuery implements CallbackQueryHandler {
     public List<String> getHandlerQueryType() {
         //merge two lists to remove user from list
         List<String> listOfQueries = userService.getAllRegisteredUsers();
-        listOfQueries.addAll(List.of("admin","adminservice","adduser","listofusers"));
+        listOfQueries.addAll(
+                List.of(Queries.ADMIN.getValue(),
+                        Queries.ADMINSERVICE.getValue(),
+                        Queries.ADDUSER.getValue(),
+                        Queries.LISTOFUSERS.getValue()));
 
         return listOfQueries;
     }

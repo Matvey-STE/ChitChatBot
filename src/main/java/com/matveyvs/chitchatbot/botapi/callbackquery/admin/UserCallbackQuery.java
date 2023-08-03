@@ -2,6 +2,7 @@ package com.matveyvs.chitchatbot.botapi.callbackquery.admin;
 
 import com.matveyvs.chitchatbot.botapi.callbackquery.CallbackQueryHandler;
 import com.matveyvs.chitchatbot.entity.UserEntity;
+import com.matveyvs.chitchatbot.enums.Queries;
 import com.matveyvs.chitchatbot.service.KeyboardService;
 import com.matveyvs.chitchatbot.service.ReplyMessageService;
 import com.matveyvs.chitchatbot.service.UserService;
@@ -33,7 +34,7 @@ public class UserCallbackQuery implements CallbackQueryHandler {
         reply = replyMessageService
                     .sendAnswerCallbackQuery("You unregistered user please ask ADMIN",true, callbackQuery);
 
-        if (callbackData.equals("user")
+        if (callbackData.equals(Queries.USER.getValue())
                 //todo test user needed to add after
 //                && userEntity.isUserAccess()
         ){
@@ -59,6 +60,6 @@ public class UserCallbackQuery implements CallbackQueryHandler {
     }
     @Override
     public List<String> getHandlerQueryType() {
-        return List.of("user");
+        return List.of(Queries.USER.getValue());
     }
 }

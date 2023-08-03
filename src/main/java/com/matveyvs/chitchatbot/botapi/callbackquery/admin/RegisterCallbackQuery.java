@@ -3,6 +3,7 @@ package com.matveyvs.chitchatbot.botapi.callbackquery.admin;
 import com.matveyvs.chitchatbot.botapi.BotState;
 import com.matveyvs.chitchatbot.botapi.callbackquery.CallbackQueryHandler;
 import com.matveyvs.chitchatbot.entity.UserEntity;
+import com.matveyvs.chitchatbot.enums.Queries;
 import com.matveyvs.chitchatbot.service.KeyboardService;
 import com.matveyvs.chitchatbot.service.ReplyMessageService;
 import com.matveyvs.chitchatbot.service.UserService;
@@ -31,16 +32,18 @@ public class RegisterCallbackQuery implements CallbackQueryHandler {
 
         UserEntity userEntity = userService.getUserById(chatId);
 
-        if (callbackData.equals("login")){
+        if (callbackData.equals(Queries.LOGIN.getValue())){
             reply = replyMessageService
                     .getReplyMessage(chatId, replyMessageService.getLocaleText("admin.password.question"));
 
             userEntity.setStateId(BotState.ADMINPASSWORD.ordinal());
             userService.saveUser(userEntity);
         }
-        if (callbackData.equals("password")){
+        if (callbackData.equals(Queries.PASSWORD.getValue())){
             List<String> listOfButtons = List.of("Return to START");
-            List<String> listOfBQueries = List.of("start");
+            List<String> listOfBQueries =
+                    List.of(Queries.START.getValue());
+
             reply = replyMessageService
                     .getReplyMessage(chatId, replyMessageService.getLocaleText("admin.generate.admin.password.message"),
                             keyboardService.getInlineKeyboard(listOfButtons,listOfBQueries));
@@ -50,6 +53,8 @@ public class RegisterCallbackQuery implements CallbackQueryHandler {
     }
     @Override
     public List<String> getHandlerQueryType() {
-        return List.of("login","password");
+        return
+                List.of(Queries.LOGIN.getValue(),
+                        Queries.PASSWORD.getValue());
     }
 }

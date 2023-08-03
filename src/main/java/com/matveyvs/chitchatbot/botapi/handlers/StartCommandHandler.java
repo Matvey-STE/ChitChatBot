@@ -2,6 +2,7 @@ package com.matveyvs.chitchatbot.botapi.handlers;
 
 import com.matveyvs.chitchatbot.botapi.BotState;
 import com.matveyvs.chitchatbot.entity.UserEntity;
+import com.matveyvs.chitchatbot.enums.Queries;
 import com.matveyvs.chitchatbot.service.KeyboardService;
 import com.matveyvs.chitchatbot.service.ReplyMessageService;
 import com.matveyvs.chitchatbot.service.UserService;
@@ -33,8 +34,11 @@ public class StartCommandHandler implements InputMessageHandler{
         UserEntity userEntity = userService.getUserById(chatId);
 
         if (userEntity == null) {
-            List<String> listOfButtons = List.of("LET'S BEGIN THE JOURNEY!");
-            List<String> listOfBQueries = List.of("start");
+            List<String> listOfButtons =
+                    List.of("LET'S BEGIN THE JOURNEY!");
+            List<String> listOfBQueries =
+                    List.of(Queries.START.getValue());
+
             reply = replyMessageService
                     .getReplyMessage(chatId, replyMessageService.getLocaleText("reply.access.ask"),
                             keyboardService.getInlineKeyboard(listOfButtons,listOfBQueries));
@@ -51,8 +55,11 @@ public class StartCommandHandler implements InputMessageHandler{
             log.info("User {} was checked if he has access", message.getChat().getUserName());
             userService.saveUser(userEntity);
         } else {
-            List<String> listOfButtons = List.of("LET'S BEGIN THE JOURNEY!");
-            List<String> listOfBQueries = List.of("start");
+            List<String> listOfButtons =
+                    List.of("LET'S BEGIN THE JOURNEY!");
+            List<String> listOfBQueries =
+                    List.of(Queries.START.getValue());
+
             reply = replyMessageService
                     .getReplyMessage(chatId, replyMessageService.getLocaleText("reply.hello.registered"),
                             keyboardService.getInlineKeyboard(listOfButtons,listOfBQueries));

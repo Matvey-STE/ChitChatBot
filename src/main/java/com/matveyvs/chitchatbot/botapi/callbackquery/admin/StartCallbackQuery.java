@@ -3,6 +3,7 @@ package com.matveyvs.chitchatbot.botapi.callbackquery.admin;
 import com.matveyvs.chitchatbot.botapi.BotState;
 import com.matveyvs.chitchatbot.botapi.callbackquery.CallbackQueryHandler;
 import com.matveyvs.chitchatbot.entity.UserEntity;
+import com.matveyvs.chitchatbot.enums.Queries;
 import com.matveyvs.chitchatbot.service.KeyboardService;
 import com.matveyvs.chitchatbot.service.ReplyMessageService;
 import com.matveyvs.chitchatbot.service.UserService;
@@ -42,9 +43,13 @@ public class StartCallbackQuery implements CallbackQueryHandler {
             log.info("Add new user from StartCallbackQuery: {}", userEntity.toString());
         }
 
-        if (callbackData.equals("start")){
-            List<String> listOfButtons = List.of("Admin login", "User login");
-            List<String> listOfBQueries = List.of("admin", "user");
+        if (callbackData.equals(Queries.START.getValue())){
+            List<String> listOfButtons =
+                    List.of("Admin login", "User login");
+            List<String> listOfBQueries =
+                    List.of(Queries.ADMIN.getValue(),
+                            Queries.USER.getValue());
+
             reply = replyMessageService
                     .getReplyMessage(chatId, replyMessageService.getLocaleText("reply.access.ask"),
                             keyboardService.getInlineKeyboard(listOfButtons,listOfBQueries));
@@ -54,6 +59,6 @@ public class StartCallbackQuery implements CallbackQueryHandler {
     }
     @Override
     public List<String> getHandlerQueryType() {
-        return List.of("start");
+        return List.of(Queries.START.getValue());
     }
 }

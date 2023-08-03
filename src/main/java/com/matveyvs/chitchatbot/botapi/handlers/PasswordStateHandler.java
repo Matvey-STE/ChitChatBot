@@ -2,6 +2,7 @@ package com.matveyvs.chitchatbot.botapi.handlers;
 
 import com.matveyvs.chitchatbot.botapi.BotState;
 import com.matveyvs.chitchatbot.entity.UserEntity;
+import com.matveyvs.chitchatbot.enums.Queries;
 import com.matveyvs.chitchatbot.service.KeyboardService;
 import com.matveyvs.chitchatbot.service.ReplyMessageService;
 import com.matveyvs.chitchatbot.service.UserService;
@@ -36,14 +37,20 @@ public class PasswordStateHandler implements InputMessageHandler {
         UserEntity userEntity = userService.getUserById(chatId);
 
         if (messageText.equals(adminPassword)){
-            List<String> listOfButtons = List.of("Continue as ADMIN");
-            List<String> listOfBQueries = List.of("adminservice");
+            List<String> listOfButtons =
+                    List.of("Continue as ADMIN");
+            List<String> listOfBQueries =
+                    List.of(Queries.ADMINSERVICE.getValue());
+
             reply = replyMessageService
                     .getReplyMessage(chatId, replyMessageService.getLocaleText("admin.successful.message"),
                             keyboardService.getInlineKeyboard(listOfButtons,listOfBQueries));
         } else {
-            List<String> listOfButtons = List.of("Back to ADMIN");
-            List<String> listOfBQueries = List.of("admin");
+            List<String> listOfButtons =
+                    List.of("Back to ADMIN");
+            List<String> listOfBQueries =
+                    List.of(Queries.ADMIN.getValue());
+
             reply = replyMessageService
                     .getReplyMessage(chatId, replyMessageService.getLocaleText("admin.unsuccessful.message"),
                             keyboardService.getInlineKeyboard(listOfButtons,listOfBQueries));

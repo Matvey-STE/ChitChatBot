@@ -3,6 +3,7 @@ package com.matveyvs.chitchatbot.botapi;
 import com.matveyvs.chitchatbot.botapi.callbackquery.CallbackQueryFacade;
 import com.matveyvs.chitchatbot.entity.RegisteredUser;
 import com.matveyvs.chitchatbot.entity.UserEntity;
+import com.matveyvs.chitchatbot.enums.Queries;
 import com.matveyvs.chitchatbot.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -38,7 +39,8 @@ public class TelegramFacade {
                 replyMessage = callbackQueryFacade.processCallBackQuery(callbackQuery);
             } else {
                 log.info("User entity is null");
-                callbackQuery.setData("start");
+
+                callbackQuery.setData(Queries.START.getValue());
                 replyMessage = callbackQueryFacade.processCallBackQuery(callbackQuery);
             }
             return replyMessage;

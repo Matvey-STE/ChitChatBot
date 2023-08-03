@@ -2,6 +2,7 @@ package com.matveyvs.chitchatbot.botapi.handlers;
 
 import com.matveyvs.chitchatbot.botapi.BotState;
 import com.matveyvs.chitchatbot.entity.UserEntity;
+import com.matveyvs.chitchatbot.enums.Queries;
 import com.matveyvs.chitchatbot.service.KeyboardService;
 import com.matveyvs.chitchatbot.service.ReplyMessageService;
 import com.matveyvs.chitchatbot.service.UserService;
@@ -30,10 +31,16 @@ public class AdminCommandHandler implements InputMessageHandler{
         Integer messageId = message.getMessageId();
 
         UserEntity userEntity = userService.getUserById(chatId);
-        System.out.println(userEntity.toString());
+        log.info(userEntity.toString());
         if (userEntity.getStateId() == BotState.ADDUSER.ordinal()){
-            List<String> listOfButtons = List.of("Add USER","Show list of USERS","Return to ADMIN service");
-            List<String> listOfBQueries = List.of("adduser","listofusers","adminservice");
+            List<String> listOfButtons =
+                    List.of("Add USER",
+                            "Show list of USERS",
+                            "Return to ADMIN service");
+            List<String> listOfBQueries =
+                    List.of(Queries.ADDUSER.getValue(),
+                            Queries.LISTOFUSERS.getValue(),
+                            Queries.ADMINSERVICE.getValue());
             reply = replyMessageService
                     .getReplyMessage(chatId, replyMessageService.getLocaleText("admin.successful.adduser.message"),
                             keyboardService.getInlineKeyboard(listOfButtons,listOfBQueries));
@@ -45,7 +52,7 @@ public class AdminCommandHandler implements InputMessageHandler{
             if(userService.isUserInListRegisteredUser(userEntity.getUserName())) {
                 userEntity.setUserAccess(true);
             }
-            System.out.println(userEntity.isUserAccess());
+            log.info(userEntity.isUserAccess());
             log.info("User {} was checked if he has access", message.getChat().getUserName());
             userEntity.setStateId(BotState.START.ordinal());
             userService.saveUser(userEntity);
