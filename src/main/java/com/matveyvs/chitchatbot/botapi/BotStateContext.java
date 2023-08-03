@@ -22,47 +22,7 @@ public class BotStateContext {
         InputMessageHandler currentMessageHandler = findMessageHandler(currentState);
         return currentMessageHandler.handle(message);
     }
-    //test callbackquary
-
-
     private InputMessageHandler findMessageHandler(BotState currentState) {
-/*        if (isStartState(currentState)) {
-            return messageHandlers.get(BotState.START_MESSAGE);
-        }*/
-/*        if (isAdmin(currentState)) {
-            return messageHandlers.get(BotState.ADMIN);
-        }
-        if (isUser(currentState)) {
-            return messageHandlers.get(BotState.USER);
-        }*/
         return messageHandlers.get(currentState);
     }
-
-/*    private boolean isStartState(BotState state) {
-        return switch (state) {
-            case START_MESSAGE, ADMIN_PASSWORD -> true;
-            default -> false;
-        };
-    }
-    private boolean isAdmin(BotState state){
-        return switch (state) {
-            case ADMIN,
-                    CREATEUSER,
-                    DELETEUSER,
-                    UPDATEDATA,
-                    LISTOFADMINS,
-                    LISTOFUSERS,
-                    ADMIN_HELP -> true;
-            default -> false;
-        };
-    }
-    private boolean isUser(BotState state){
-        return switch (state) {
-            case USER, USER_HELP -> true;
-            default -> false;
-        };
-    }*/
-
-
-
 }
