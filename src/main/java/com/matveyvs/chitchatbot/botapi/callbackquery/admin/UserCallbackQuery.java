@@ -34,27 +34,24 @@ public class UserCallbackQuery implements CallbackQueryHandler {
         reply = replyMessageService
                     .sendAnswerCallbackQuery("You unregistered user please ask ADMIN",true, callbackQuery);
 
-        if (callbackData.equals(Queries.USER.getValue())
-                //todo test user needed to add after
-//                && userEntity.isUserAccess()
-        ){
+        if (callbackData.equals(Queries.USER.getValue()) && userEntity.isUserAccess()){
             List<String> listOfButtons = List.of("Best Definition TASK","Return to START");
-            List<String> listOfBQueries = List.of("bestdefinitiontask","start");
+            List<String> listOfBQueries = List.of(Queries.BESTDEFINITIONTASK.getValue(),Queries.START.getValue());
             reply = replyMessageService
                     .getReplyMessage(chatId, replyMessageService.getLocaleText("reply.user.message"),
                             keyboardService.getInlineKeyboard(listOfButtons,listOfBQueries));
             log.info("Delete message callbackData user");
             replyMessageService.deleteMessage(chatId, callBackMessageId);
         }
-/*        if (callbackData.equals("bestdefinition") && userEntity.isUserAccess()){
+        if (callbackData.equals(Queries.BESTDEFINITIONTASK.getValue()) && userEntity.isUserAccess()){
             List<String> listOfButtons = List.of("Best Definition TASK","Return to START");
-            List<String> listOfBQueries = List.of("bestdefinitiontask","start");
+            List<String> listOfBQueries = List.of(Queries.BESTDEFINITIONTASK.getValue(),Queries.START.getValue());
             reply = replyMessageService
                     .getReplyMessage(chatId,
                             "reply.user.message",
                             keyboardService.getInlineKeyboard(listOfButtons,listOfBQueries));
             replyMessageService.deleteMessage(chatId, callBackMessageId);
-        }*/
+        }
 
         return reply;
     }
