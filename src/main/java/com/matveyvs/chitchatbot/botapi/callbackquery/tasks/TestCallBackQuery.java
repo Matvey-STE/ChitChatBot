@@ -3,6 +3,7 @@ package com.matveyvs.chitchatbot.botapi.callbackquery.tasks;
 import com.matveyvs.chitchatbot.botapi.callbackquery.CallbackQueryHandler;
 import com.matveyvs.chitchatbot.entity.BestDefinition;
 import com.matveyvs.chitchatbot.service.ReplyMessageService;
+import com.matveyvs.chitchatbot.service.UpdateDataDB;
 import com.matveyvs.chitchatbot.service.taskservices.BestDefinitionService;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Component;
@@ -13,16 +14,17 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMa
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 @Log4j2
 @Component
 public class TestCallBackQuery implements CallbackQueryHandler {
     private List<String> callBackQueriesList = new ArrayList<>();
+    private final UpdateDataDB updateDataDB;
     private final BestDefinitionService bestDefinitionService;
     private final ReplyMessageService replyMessageService;
 
-    public TestCallBackQuery(BestDefinitionService bestDefinitionService, ReplyMessageService replyMessageService) {
+    public TestCallBackQuery(UpdateDataDB updateDataDB, BestDefinitionService bestDefinitionService, ReplyMessageService replyMessageService) {
+        this.updateDataDB = updateDataDB;
         this.bestDefinitionService = bestDefinitionService;
         this.replyMessageService = replyMessageService;
     }
@@ -38,7 +40,8 @@ public class TestCallBackQuery implements CallbackQueryHandler {
         String className = this.getClass().getSimpleName();
 
         if (callbackData.equals("bestdefinitiontask")){
-            testCreateAndSaveBestDefinition();
+            updateDataDB.updateBestDefinitionGoogleSheet();
+
             BestDefinition bestDefinition = bestDefinitionService.findBestDefinitionTaskById(1);
 
             String wordOfTask = bestDefinition.getTaskWord();
@@ -128,23 +131,4 @@ public class TestCallBackQuery implements CallbackQueryHandler {
         listOfAnswers.clear();
         return inlineKeyboardMarkup;
     }
-
-    private void testCreateAndSaveBestDefinition(){
-        String word = "soak (v.)";
-        String rightAnswer = "leave something in liquid, especially to clean it or make it softer";
-        List<String> stringList = new ArrayList<>();
-        stringList.add("remove liquid from the surface by pressing a piece of soft paper or cloth onto it");
-        stringList.add("use water to clean the soap or dirt from something");
-        stringList.add("leave something in liquid, especially to clean it or make it softer");
-        Collections.shuffle(stringList);
-
-        int indexOfRightAnswer = indexOfRightAnswer(rightAnswer, stringList);
-        BestDefinition bestDefinition = new BestDefinition(word,rightAnswer,indexOfRightAnswer,stringList);
-
-        bestDefinitionService.saveBestDefinitionTask(bestDefinition);
-    }
-    private int indexOfRightAnswer(String rightAnswer, List<String> listOfAnswers){
-        return listOfAnswers.indexOf(rightAnswer) + 1;
-    }
-
 }
