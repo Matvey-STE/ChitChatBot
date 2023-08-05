@@ -46,4 +46,51 @@ public class KeyboardService {
         inlineKeyboardMarkup.setKeyboard(usersList);
         return inlineKeyboardMarkup;
     }
+    //for create inline buttons 5 in row max
+    public InlineKeyboardMarkup getInlineKeyboardForButtons(Integer amountOfButtons, String className){
+        int amountOfRows = amountOfButtons/5 + 1;
+        //remainder of division
+        int remainder = amountOfButtons%5;
+        String nameOfButton = "";
+        int numberOfButton = 0;
+        List<List<InlineKeyboardButton>> rows = new ArrayList<>();
+        for (int i = 0; i < amountOfRows; i++){
+            List<InlineKeyboardButton> row = new ArrayList<>();
+            if (amountOfButtons >=5){
+                for (int counter = 0; counter < 5; counter++){
+                    numberOfButton++;
+                    nameOfButton = className + numberOfButton;
+                    InlineKeyboardButton inlineKeyboardButton = new InlineKeyboardButton();
+                    inlineKeyboardButton.setCallbackData(nameOfButton);
+                    inlineKeyboardButton.setText(String.valueOf(numberOfButton));
+                    row.add(inlineKeyboardButton);
+                    amountOfButtons--;
+                }
+            } else {
+                for (int counter = 0; counter < remainder; counter++){
+                    numberOfButton++;
+                    nameOfButton = className + numberOfButton;
+                    InlineKeyboardButton inlineKeyboardButton = new InlineKeyboardButton();
+                    inlineKeyboardButton.setCallbackData(nameOfButton);
+                    inlineKeyboardButton.setText(String.valueOf(numberOfButton));
+                    row.add(inlineKeyboardButton);
+                }
+            }
+            rows.add(row);
+        }
+        InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
+        inlineKeyboardMarkup.setKeyboard(rows);
+        return inlineKeyboardMarkup;
+    }
+    public InlineKeyboardMarkup mergeTwoInlineKeyboards(InlineKeyboardMarkup inlineKeyboardMarkupMain,
+                                                        InlineKeyboardMarkup inlineKeyboardMarkupAddition){
+        InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
+        var keyboardMain = inlineKeyboardMarkupMain.getKeyboard();
+        var keyboardAddition = inlineKeyboardMarkupAddition.getKeyboard();
+
+        List<List<InlineKeyboardButton>> mergedKeyboard = new ArrayList<>(keyboardMain);
+        mergedKeyboard.addAll(keyboardAddition);
+        inlineKeyboardMarkup.setKeyboard(mergedKeyboard);
+        return inlineKeyboardMarkup;
+    }
 }
