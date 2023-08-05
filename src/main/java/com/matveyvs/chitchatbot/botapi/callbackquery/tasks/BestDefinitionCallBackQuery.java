@@ -3,7 +3,7 @@ package com.matveyvs.chitchatbot.botapi.callbackquery.tasks;
 import com.matveyvs.chitchatbot.botapi.callbackquery.CallbackQueryHandler;
 import com.matveyvs.chitchatbot.entity.BestDefinition;
 import com.matveyvs.chitchatbot.service.ReplyMessageService;
-import com.matveyvs.chitchatbot.service.UpdateDataDB;
+import com.matveyvs.chitchatbot.service.UpdateDBService;
 import com.matveyvs.chitchatbot.service.taskservices.BestDefinitionService;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Component;
@@ -18,15 +18,14 @@ import java.util.List;
 @Log4j2
 @Component
 public class BestDefinitionCallBackQuery implements CallbackQueryHandler {
-    //todo temporary add to info to DB from user
-    private final UpdateDataDB updateDataDB;
+    private final UpdateDBService updateDBService;
     private List<String> callBackQueriesList = new ArrayList<>();
     private final BestDefinitionService bestDefinitionService;
     private final ReplyMessageService replyMessageService;
     private int start = 1;
 
-    public BestDefinitionCallBackQuery(UpdateDataDB updateDataDB, BestDefinitionService bestDefinitionService, ReplyMessageService replyMessageService) {
-        this.updateDataDB = updateDataDB;
+    public BestDefinitionCallBackQuery(UpdateDBService updateDBService, BestDefinitionService bestDefinitionService, ReplyMessageService replyMessageService) {
+        this.updateDBService = updateDBService;
         this.bestDefinitionService = bestDefinitionService;
         this.replyMessageService = replyMessageService;
     }
@@ -45,7 +44,7 @@ public class BestDefinitionCallBackQuery implements CallbackQueryHandler {
             //attempt to connect to DB
             BestDefinition bestDefinition = bestDefinitionService.findBestDefinitionTaskById(1);
             if (bestDefinition == null){
-                updateDataDB.updateBestDefinitionGoogleSheet();
+                updateDBService.updateAllRepository();
                 log.error("There is no objects from DB, updated from USER!");
             }
             bestDefinition = bestDefinitionService.findBestDefinitionTaskById(start);

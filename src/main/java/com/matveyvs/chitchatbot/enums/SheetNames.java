@@ -1,4 +1,4 @@
-package com.matveyvs.chitchatbot.service;
+package com.matveyvs.chitchatbot.enums;
 
 public enum SheetNames {
     BEST_DEFINITION ("best_definition!B2:F"),

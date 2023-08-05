@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.List;
 
 @Getter
 @Setter
@@ -13,6 +14,8 @@ import lombok.Setter;
 @NoArgsConstructor
 @Entity
 @Table(name = "task_types")
-public class TaskTypesPerDay extends AbstractClassEntity{
-    Integer setNumber;
+public class TaskSetsForDay extends AbstractClassEntity{
+    @OneToMany(targetEntity = BestDefinition.class,cascade = CascadeType.ALL)
+    @JoinColumn(name = "task_set_id", referencedColumnName = "id")
+    List<BestDefinition> bestDefinitionList;
 }

@@ -1,4 +1,4 @@
-package com.matveyvs.chitchatbot.botapi;
+package com.matveyvs.chitchatbot.enums;
 
 public enum BotState {
 

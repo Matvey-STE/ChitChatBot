@@ -1,6 +1,6 @@
 package com.matveyvs.chitchatbot.botapi.callbackquery.admin;
 
-import com.matveyvs.chitchatbot.botapi.BotState;
+import com.matveyvs.chitchatbot.enums.BotState;
 import com.matveyvs.chitchatbot.botapi.callbackquery.CallbackQueryHandler;
 import com.matveyvs.chitchatbot.entity.UserEntity;
 import com.matveyvs.chitchatbot.enums.Queries;

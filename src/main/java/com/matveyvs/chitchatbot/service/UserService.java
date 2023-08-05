@@ -1,6 +1,6 @@
 package com.matveyvs.chitchatbot.service;
 
-import com.matveyvs.chitchatbot.botapi.BotState;
+import com.matveyvs.chitchatbot.enums.BotState;
 import com.matveyvs.chitchatbot.entity.RegisteredUser;
 import com.matveyvs.chitchatbot.entity.UserEntity;
 import com.matveyvs.chitchatbot.entity.repository.RegisteredUsersRepository;

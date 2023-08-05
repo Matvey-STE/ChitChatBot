@@ -1,6 +1,7 @@
 package com.matveyvs.chitchatbot.botapi;
 
 import com.matveyvs.chitchatbot.botapi.handlers.InputMessageHandler;
+import com.matveyvs.chitchatbot.enums.BotState;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;

@@ -1,6 +1,6 @@
 package com.matveyvs.chitchatbot.botapi.handlers;
 
-import com.matveyvs.chitchatbot.botapi.BotState;
+import com.matveyvs.chitchatbot.enums.BotState;
 import com.matveyvs.chitchatbot.entity.BestDefinition;
 import com.matveyvs.chitchatbot.service.ReplyMessageService;
 import com.matveyvs.chitchatbot.service.taskservices.BestDefinitionService;
@@ -126,9 +126,6 @@ public class TestCommandHandler implements InputMessageHandler{
         bestDefinition.setIndexOfRightAnswer(indexOfRightAnswer(rightAnswer, stringList));
 
         bestDefinitionService.saveBestDefinitionTask(bestDefinition);
-
-        List<BestDefinition> list = bestDefinitionService.getAllBestDefinitions();
-        list.forEach(System.out::println);
     }
     private int indexOfRightAnswer(String rightAnswer, List<String> listOfAnswers){
         return listOfAnswers.indexOf(rightAnswer) + 1;
