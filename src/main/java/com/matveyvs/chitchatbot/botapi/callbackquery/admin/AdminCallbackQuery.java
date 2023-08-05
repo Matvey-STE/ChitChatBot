@@ -6,6 +6,7 @@ import com.matveyvs.chitchatbot.entity.UserEntity;
 import com.matveyvs.chitchatbot.enums.Queries;
 import com.matveyvs.chitchatbot.service.KeyboardService;
 import com.matveyvs.chitchatbot.service.ReplyMessageService;
+import com.matveyvs.chitchatbot.service.UpdateDataDB;
 import com.matveyvs.chitchatbot.service.UserService;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Component;
@@ -16,16 +17,18 @@ import java.util.List;
 @Log4j2
 @Component
 public class AdminCallbackQuery implements CallbackQueryHandler {
+    private final UpdateDataDB updateDataDB;
     private final KeyboardService keyboardService;
     private final ReplyMessageService replyMessageService;
     private final UserService userService;
 
-    public AdminCallbackQuery(KeyboardService keyboardService, ReplyMessageService replyMessageService, UserService userService) {
+    public AdminCallbackQuery(UpdateDataDB updateDataDB, KeyboardService keyboardService,
+                              ReplyMessageService replyMessageService, UserService userService) {
+        this.updateDataDB = updateDataDB;
         this.keyboardService = keyboardService;
         this.replyMessageService = replyMessageService;
         this.userService = userService;
     }
-
     @Override
     public SendMessage handleCallbackQuery(CallbackQuery callbackQuery) {
         SendMessage reply = null;
@@ -49,10 +52,11 @@ public class AdminCallbackQuery implements CallbackQueryHandler {
         }
         if (callbackData.equals(Queries.ADMINSERVICE.getValue())){
             List<String> listOfButtons = List
-                    .of( "Add user","List of users", "Return to start");
+                    .of( "Add user","List of users","Update data", "Return to start");
             List<String> listOfBQueries =
                     List.of(Queries.ADDUSER.getValue(),
                             Queries.LISTOFUSERS.getValue(),
+                            Queries.UPDATEDATA.getValue(),
                             Queries.START.getValue());
 
             reply = new SendMessage();
@@ -73,6 +77,20 @@ public class AdminCallbackQuery implements CallbackQueryHandler {
             reply.setText(replyMessageService.getLocaleText("reply.admin.users.list"));
             reply.setParseMode("HTML");
             reply.setReplyMarkup(keyboardService.getInlineKeyboard(userService.getAllRegisteredUsers()));
+        }
+        if (callbackData.equals(Queries.UPDATEDATA.getValue())){
+            updateDataDB.updateBestDefinitionGoogleSheet();
+
+            List<String> listOfButtons = List
+                    .of("Return to ADMIN SERVICE");
+            List<String> listOfBQueries =
+                    List.of(Queries.ADMINSERVICE.getValue());
+
+            reply = new SendMessage();
+            reply.setChatId(chatId);
+            reply.setText(replyMessageService.getLocaleText("reply.data.updated"));
+            reply.setParseMode("HTML");
+            reply.setReplyMarkup(keyboardService.getInlineKeyboard(listOfButtons,listOfBQueries));
         }
         //remove user from list of registered users
         List<String> listOfUsers = userService.getAllRegisteredUsers();
@@ -107,6 +125,7 @@ public class AdminCallbackQuery implements CallbackQueryHandler {
                 List.of(Queries.ADMIN.getValue(),
                         Queries.ADMINSERVICE.getValue(),
                         Queries.ADDUSER.getValue(),
+                        Queries.UPDATEDATA.getValue(),
                         Queries.LISTOFUSERS.getValue()));
 
         return listOfQueries;

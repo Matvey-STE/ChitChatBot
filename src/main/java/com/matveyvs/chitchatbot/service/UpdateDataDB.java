@@ -3,7 +3,6 @@ package com.matveyvs.chitchatbot.service;
 import com.matveyvs.chitchatbot.entity.BestDefinition;
 import com.matveyvs.chitchatbot.service.taskservices.BestDefinitionService;
 import org.springframework.stereotype.Component;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;

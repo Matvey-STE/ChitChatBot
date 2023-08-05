@@ -17,13 +17,15 @@ import java.util.ArrayList;
 import java.util.List;
 @Log4j2
 @Component
-public class TestCallBackQuery implements CallbackQueryHandler {
-    private List<String> callBackQueriesList = new ArrayList<>();
+public class BestDefinitionCallBackQuery implements CallbackQueryHandler {
+    //todo temporary add to info to DB from user
     private final UpdateDataDB updateDataDB;
+    private List<String> callBackQueriesList = new ArrayList<>();
     private final BestDefinitionService bestDefinitionService;
     private final ReplyMessageService replyMessageService;
+    private int start = 1;
 
-    public TestCallBackQuery(UpdateDataDB updateDataDB, BestDefinitionService bestDefinitionService, ReplyMessageService replyMessageService) {
+    public BestDefinitionCallBackQuery(UpdateDataDB updateDataDB, BestDefinitionService bestDefinitionService, ReplyMessageService replyMessageService) {
         this.updateDataDB = updateDataDB;
         this.bestDefinitionService = bestDefinitionService;
         this.replyMessageService = replyMessageService;
@@ -40,18 +42,20 @@ public class TestCallBackQuery implements CallbackQueryHandler {
         String className = this.getClass().getSimpleName();
 
         if (callbackData.equals("bestdefinitiontask")){
-            updateDataDB.updateBestDefinitionGoogleSheet();
-
+            //attempt to connect to DB
             BestDefinition bestDefinition = bestDefinitionService.findBestDefinitionTaskById(1);
-
-            String wordOfTask = bestDefinition.getTaskWord();
-            List<String> listOfAnswers = bestDefinition.getListOfAnswers();
-
-            callBackQueriesList = createButtonQueries(className, listOfAnswers.size());
-
+            if (bestDefinition == null){
+                updateDataDB.updateBestDefinitionGoogleSheet();
+                log.error("There is no objects from DB, updated from USER!");
+            }
+            bestDefinition = bestDefinitionService.findBestDefinitionTaskById(start);
+                String wordOfTask = bestDefinition.getTaskWord();
+                List<String> listOfAnswers = bestDefinition.getListOfAnswers();
+                callBackQueriesList = createButtonQueries(className, listOfAnswers.size());
+                start++;
             reply = replyMessageService
-                    .getReplyMessage(chatId, createMessageTaskConstructor(wordOfTask, listOfAnswers),
-                            createTaskMessageWithButtons(listOfAnswers));
+                        .getReplyMessage(chatId, createMessageTaskConstructor(wordOfTask, listOfAnswers),
+                                createTaskMessageWithButtons(listOfAnswers));
         }
         if (callbackData.contains(className)){
             int rightButton = bestDefinitionService.getIndexOfRightAnswer(1);

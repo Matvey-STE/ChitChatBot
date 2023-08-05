@@ -11,7 +11,9 @@ public enum Queries {
     ADDUSER ("adduser"),
     PASSWORD ("password"),
     LISTOFUSERS ("listofusers"),
-    BESTDEFINITIONTASK ("bestdefinitiontask");
+    BESTDEFINITIONTASK ("bestdefinitiontask"),
+    UPDATEDATA ("updatedata");
+
 
     private final String value;
 

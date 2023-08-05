@@ -43,7 +43,11 @@ public class StartCommandHandler implements InputMessageHandler{
                     .getReplyMessage(chatId, replyMessageService.getLocaleText("reply.access.ask"),
                             keyboardService.getInlineKeyboard(listOfButtons,listOfBQueries));
 
-            userEntity = new UserEntity(chatId, telegram.getFirstName(), telegram.getLastName(), telegram.getUserName(), "en-UK",false,false,0);
+            userEntity = new UserEntity(chatId,
+                    telegram.getFirstName(),
+                    telegram.getLastName(),
+                    telegram.getUserName(),
+                    "en-UK",false,false,0);
 
             userEntity.setStateId(BotState.START.ordinal());
             log.info("Add new user from StartCommandHandler: {}", userEntity.toString());

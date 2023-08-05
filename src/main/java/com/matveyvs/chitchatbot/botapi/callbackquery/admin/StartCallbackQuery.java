@@ -37,7 +37,11 @@ public class StartCallbackQuery implements CallbackQueryHandler {
         UserEntity userEntity = userService.getUserById(chatId);
 
         if(userEntity == null){
-            userEntity = new UserEntity(chatId, telegram.getFirstName(), telegram.getLastName(), telegram.getUserName(), "en-UK",false,false,0);
+            userEntity = new UserEntity(chatId,
+                    telegram.getFirstName(),
+                    telegram.getLastName(),
+                    telegram.getUserName(),
+                    "en-UK",false,false,0);
             userEntity.setStateId(BotState.START.ordinal());
             userService.saveUser(userEntity);
             log.info("Add new user from StartCallbackQuery: {}", userEntity.toString());

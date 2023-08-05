@@ -26,15 +26,21 @@ public class GoogleSheetsService {
 
     private static Credential authorize() throws IOException, GeneralSecurityException {
         InputStream in = GoogleSheetsService.class.getResourceAsStream("/credentials.json");
-        GoogleClientSecrets clientSecrets =
-                GoogleClientSecrets.load(GsonFactory.getDefaultInstance(), new InputStreamReader(in));
-        List<String> scopes = Arrays.asList(SheetsScopes.SPREADSHEETS);
-        GoogleAuthorizationCodeFlow flow = new GoogleAuthorizationCodeFlow.Builder(
-                GoogleNetHttpTransport.newTrustedTransport(), GsonFactory.getDefaultInstance(), clientSecrets, scopes)
-                .setDataStoreFactory(new FileDataStoreFactory(new java.io.File("tokens")))
-                .setAccessType("offline")
-                .build();
-        return new AuthorizationCodeInstalledApp(flow, new LocalServerReceiver()).authorize("user");
+        Credential credential = null;
+        if (in != null){
+            GoogleClientSecrets clientSecrets =
+                    GoogleClientSecrets.load(GsonFactory.getDefaultInstance(), new InputStreamReader(in));
+            List<String> scopes = Arrays.asList(SheetsScopes.SPREADSHEETS);
+            GoogleAuthorizationCodeFlow flow = new GoogleAuthorizationCodeFlow.Builder(
+                    GoogleNetHttpTransport.newTrustedTransport(), GsonFactory.getDefaultInstance(), clientSecrets, scopes)
+                    .setDataStoreFactory(new FileDataStoreFactory(new java.io.File("tokens")))
+                    .setAccessType("offline")
+                    .build();
+            credential = new AuthorizationCodeInstalledApp(flow, new LocalServerReceiver()).authorize("user");
+        } else {
+            log.info("credentials.json is not found!");
+        }
+        return credential;
     }
     public static Sheets getSheetsService() throws GeneralSecurityException, IOException {
         Credential credential = authorize();

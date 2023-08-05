@@ -26,4 +26,7 @@ public class BestDefinitionService {
     public List<BestDefinition> getAllBestDefinitions(){
         return bestDefinitionRepository.findAll();
     }
+    public int getAmountOfTasks(){
+        return bestDefinitionRepository.findAll().size();
+    }
 }
