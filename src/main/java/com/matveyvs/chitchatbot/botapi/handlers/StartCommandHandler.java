@@ -1,8 +1,9 @@
 package com.matveyvs.chitchatbot.botapi.handlers;
 
+import com.matveyvs.chitchatbot.entity.UserTaskCondition;
 import com.matveyvs.chitchatbot.enums.BotState;
 import com.matveyvs.chitchatbot.entity.UserEntity;
-import com.matveyvs.chitchatbot.enums.Queries;
+import com.matveyvs.chitchatbot.enums.StaticQueries;
 import com.matveyvs.chitchatbot.service.KeyboardService;
 import com.matveyvs.chitchatbot.service.ReplyMessageService;
 import com.matveyvs.chitchatbot.service.UserService;
@@ -37,17 +38,24 @@ public class StartCommandHandler implements InputMessageHandler{
             List<String> listOfButtons =
                     List.of("LET'S BEGIN THE JOURNEY!");
             List<String> listOfBQueries =
-                    List.of(Queries.START.getValue());
+                    List.of(StaticQueries.START.getValue());
 
             reply = replyMessageService
                     .getReplyMessage(chatId, replyMessageService.getLocaleText("reply.access.ask"),
-                            keyboardService.getInlineKeyboard(listOfButtons,listOfBQueries));
+                            keyboardService.getInlineKeyboardButtonsAndQueries(listOfButtons,listOfBQueries));
+
+
+            UserTaskCondition userTaskCondition = new UserTaskCondition(0);
 
             userEntity = new UserEntity(chatId,
                     telegram.getFirstName(),
                     telegram.getLastName(),
                     telegram.getUserName(),
-                    "en-UK",false,false,0);
+                    "en-UK",
+                    false,
+                    false,
+                    0,
+                    userTaskCondition);
 
             userEntity.setStateId(BotState.START.ordinal());
             log.info("Add new user from StartCommandHandler: {}", userEntity.toString());
@@ -62,11 +70,11 @@ public class StartCommandHandler implements InputMessageHandler{
             List<String> listOfButtons =
                     List.of("LET'S BEGIN THE JOURNEY!");
             List<String> listOfBQueries =
-                    List.of(Queries.START.getValue());
+                    List.of(StaticQueries.START.getValue());
 
             reply = replyMessageService
                     .getReplyMessage(chatId, replyMessageService.getLocaleText("reply.hello.registered"),
-                            keyboardService.getInlineKeyboard(listOfButtons,listOfBQueries));
+                            keyboardService.getInlineKeyboardButtonsAndQueries(listOfButtons,listOfBQueries));
 
             userEntity.setStateId(BotState.START.ordinal());
             userService.saveUser(userEntity);

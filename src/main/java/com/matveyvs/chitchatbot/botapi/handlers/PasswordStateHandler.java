@@ -2,7 +2,7 @@ package com.matveyvs.chitchatbot.botapi.handlers;
 
 import com.matveyvs.chitchatbot.enums.BotState;
 import com.matveyvs.chitchatbot.entity.UserEntity;
-import com.matveyvs.chitchatbot.enums.Queries;
+import com.matveyvs.chitchatbot.enums.StaticQueries;
 import com.matveyvs.chitchatbot.service.KeyboardService;
 import com.matveyvs.chitchatbot.service.ReplyMessageService;
 import com.matveyvs.chitchatbot.service.UserService;
@@ -40,20 +40,20 @@ public class PasswordStateHandler implements InputMessageHandler {
             List<String> listOfButtons =
                     List.of("Continue as ADMIN");
             List<String> listOfBQueries =
-                    List.of(Queries.ADMINSERVICE.getValue());
+                    List.of(StaticQueries.ADMINSERVICE.getValue());
 
             reply = replyMessageService
                     .getReplyMessage(chatId, replyMessageService.getLocaleText("admin.successful.message"),
-                            keyboardService.getInlineKeyboard(listOfButtons,listOfBQueries));
+                            keyboardService.getInlineKeyboardButtonsAndQueries(listOfButtons,listOfBQueries));
         } else {
             List<String> listOfButtons =
                     List.of("Back to ADMIN");
             List<String> listOfBQueries =
-                    List.of(Queries.ADMIN.getValue());
+                    List.of(StaticQueries.ADMIN.getValue());
 
             reply = replyMessageService
                     .getReplyMessage(chatId, replyMessageService.getLocaleText("admin.unsuccessful.message"),
-                            keyboardService.getInlineKeyboard(listOfButtons,listOfBQueries));
+                            keyboardService.getInlineKeyboardButtonsAndQueries(listOfButtons,listOfBQueries));
         }
         //todo check if delete is working and not throwing exception
         //remove 2 messages after inserting password

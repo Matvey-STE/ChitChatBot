@@ -17,9 +17,11 @@ public class ReplyMessageService {
         this.localeMessageService = localeMessageService;
         this.webHookBotService = webHookBotService;
     }
-    //change locale to use another language
-    public void setLocaleMessageService(String localeTag) {
-        localeMessageService.setLocale(Locale.forLanguageTag(localeTag));
+    public String getLocaleText(String replyMessage){
+        return localeMessageService.getMessage(replyMessage);
+    }
+    public void deleteMessage(Long chatId, Integer messageId){
+        webHookBotService.deleteMessage(chatId, messageId);
     }
     public SendMessage getReplyMessage(Long chatId, String message){
         SendMessage sendMessage = new SendMessage();
@@ -36,17 +38,15 @@ public class ReplyMessageService {
         sendMessage.setParseMode("HTML");
         return sendMessage;
     }
-    public String getLocaleText(String replyMessage){
-        return localeMessageService.getMessage(replyMessage);
-    }
-    public void deleteMessage(Long chatId, Integer messageId){
-        webHookBotService.deleteMessage(chatId, messageId);
-    }
-    public AnswerCallbackQuery sendAnswerCallbackQuery(String text, boolean alert, CallbackQuery callbackQuery){
+    public AnswerCallbackQuery getAnswerCallbackQuery(String text, boolean alert, CallbackQuery callbackQuery){
         AnswerCallbackQuery answerCallbackQuery = new AnswerCallbackQuery();
         answerCallbackQuery.setCallbackQueryId(callbackQuery.getId());
         answerCallbackQuery.setShowAlert(alert);
         answerCallbackQuery.setText(text);
         return answerCallbackQuery;
+    }
+    //change locale to use another language
+    public void setLocaleMessageService(String localeTag) {
+        localeMessageService.setLocale(Locale.forLanguageTag(localeTag));
     }
 }

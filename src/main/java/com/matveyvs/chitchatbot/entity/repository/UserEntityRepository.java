@@ -14,10 +14,32 @@ import java.util.List;
 public interface UserEntityRepository extends JpaRepository<UserEntity, Long> {
     List<UserEntity> findAll();
     UserEntity findByChatId (Long chatId);
-    UserEntity findByUserName(String username);
-    void deleteByChatId (Long chatId);
     @Transactional
     void deleteByUserName (String userName);
+    @Transactional
+    @Modifying
+    @Query(value = "UPDATE USER_TASK_CONDITION\n" +
+            "SET BEST_DEFINITION = :numberOfTasks " + // Add a space before "WHERE"
+            "WHERE ID IN (\n" +
+            "    SELECT C.ID\n" +
+            "    FROM USER_TASK_CONDITION C\n" +
+            "    INNER JOIN USERS U ON U.USER_TASK_CONDITION_ID = C.ID\n" +
+            "    WHERE U.CHAT_ID = :chatId\n" +
+            ")", nativeQuery = true)
+    void saveUserTaskConditionBestDefinition(Long chatId, Integer numberOfTasks);
+
+    @Transactional
+    @Query(value = "SELECT BEST_DEFINITION \n" +
+            "FROM USER_TASK_CONDITION\n" +
+            "WHERE ID IN (\n" +
+            "SELECT C.ID\n" +
+            "FROM USER_TASK_CONDITION C\n" +
+            "INNER JOIN USERS U ON U.USER_TASK_CONDITION_ID = C.ID\n" +
+            " WHERE U.CHAT_ID = :chatId" +
+            ")", nativeQuery = true)
+    int getUserTaskConditionBestDefinition(Long chatId);
+
+
     @Query(value = "SELECT STATE_ID FROM USERS WHERE CHAT_ID = :chatId",nativeQuery = true)
     int getUserBotStateById(Long chatId);
     @Transactional

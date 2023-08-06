@@ -3,7 +3,8 @@ package com.matveyvs.chitchatbot.botapi.callbackquery.admin;
 import com.matveyvs.chitchatbot.enums.BotState;
 import com.matveyvs.chitchatbot.botapi.callbackquery.CallbackQueryHandler;
 import com.matveyvs.chitchatbot.entity.UserEntity;
-import com.matveyvs.chitchatbot.enums.Queries;
+import com.matveyvs.chitchatbot.enums.StaticQueries;
+import com.matveyvs.chitchatbot.service.CallbackQueriesService;
 import com.matveyvs.chitchatbot.service.KeyboardService;
 import com.matveyvs.chitchatbot.service.ReplyMessageService;
 import com.matveyvs.chitchatbot.service.UserService;
@@ -16,13 +17,16 @@ import java.util.List;
 @Log4j2
 @Component
 public class AdminCallbackQuery implements CallbackQueryHandler {
+    private final CallbackQueriesService callbackQueriesService;
     private final KeyboardService keyboardService;
     private final ReplyMessageService replyMessageService;
     private final UserService userService;
 
-    public AdminCallbackQuery(KeyboardService keyboardService,
+    public AdminCallbackQuery(CallbackQueriesService callbackQueriesService,
+                              KeyboardService keyboardService,
                               ReplyMessageService replyMessageService,
                               UserService userService) {
+        this.callbackQueriesService = callbackQueriesService;
         this.keyboardService = keyboardService;
         this.replyMessageService = replyMessageService;
         this.userService = userService;
@@ -36,53 +40,62 @@ public class AdminCallbackQuery implements CallbackQueryHandler {
 
         UserEntity userEntity = userService.getUserById(chatId);
 
-        if (callbackData.equals(Queries.ADMIN.getValue())){
-            List<String> listOfButtons = List.of("Login", "Create Password", "Return to start");
+        if (callbackData.equals(StaticQueries.ADMIN.getValue())){
+            List<String> listOfButtons =
+                    List.of("Login",
+                    "Create Password",
+                    "Return to start");
             List<String> listOfBQueries =
-                    List.of(Queries.LOGIN.getValue(),
-                            Queries.PASSWORD.getValue(),
-                            Queries.START.getValue());
+                    List.of(StaticQueries.LOGIN.getValue(),
+                            StaticQueries.PASSWORD.getValue(),
+                            StaticQueries.START.getValue());
 
-            reply = new SendMessage();
-            reply.setChatId(chatId);
-            reply.setText(replyMessageService.getLocaleText("reply.admin.keyboard.message"));
-            reply.setReplyMarkup(keyboardService.getInlineKeyboard(listOfButtons,listOfBQueries));
+            reply = replyMessageService.getReplyMessage(
+                    chatId,
+                    replyMessageService.getLocaleText("reply.admin.keyboard.message"),
+                    keyboardService.getInlineKeyboardButtonsAndQueries(listOfButtons,listOfBQueries));
         }
-        if (callbackData.equals(Queries.ADMINSERVICE.getValue())){
+        if (callbackData.equals(StaticQueries.ADMINSERVICE.getValue())){
             List<String> listOfButtons = List
-                    .of( "Add user","List of users","Update data", "Return to start");
+                    .of( "Add user",
+                            "List of users",
+                            "Update data",
+                            "Return to start");
             List<String> listOfBQueries =
-                    List.of(Queries.ADDUSER.getValue(),
-                            Queries.LISTOFUSERS.getValue(),
-                            Queries.UPDATEDATA.getValue(),
-                            Queries.START.getValue());
+                    List.of(StaticQueries.ADDUSER.getValue(),
+                            StaticQueries.LISTOFUSERS.getValue(),
+                            StaticQueries.UPDATEDATA.getValue(),
+                            StaticQueries.START.getValue());
 
-            reply = new SendMessage();
-            reply.setChatId(chatId);
-            reply.setText(replyMessageService.getLocaleText("reply.admin.keyboard.message"));
-            reply.setReplyMarkup(keyboardService.getInlineKeyboard(listOfButtons,listOfBQueries));
+            reply = replyMessageService.getReplyMessage(
+                    chatId,
+                    replyMessageService.getLocaleText("reply.admin.keyboard.message"),
+                    keyboardService.getInlineKeyboardButtonsAndQueries(listOfButtons,listOfBQueries));
         }
-        if (callbackData.equals(Queries.ADDUSER.getValue())){
-            reply = replyMessageService
-                    .getReplyMessage(chatId, replyMessageService.getLocaleText("admin.adduser.question"));
+        if (callbackData.equals(StaticQueries.ADDUSER.getValue())){
+            reply = replyMessageService.getReplyMessage(
+                    chatId,
+                    replyMessageService.getLocaleText("admin.adduser.question"));
 
             userEntity.setStateId(BotState.ADDUSER.ordinal());
             userService.saveUser(userEntity);
         }
-        if (callbackData.equals(Queries.LISTOFUSERS.getValue())){
-            reply = new SendMessage();
-            reply.setChatId(chatId);
-            reply.setText(replyMessageService.getLocaleText("reply.admin.users.list"));
-            reply.setParseMode("HTML");
-            reply.setReplyMarkup(keyboardService.getInlineKeyboard(userService.getAllRegisteredUsers()));
+        if (callbackData.equals(StaticQueries.LISTOFUSERS.getValue())){
+            reply = replyMessageService.getReplyMessage(
+                    chatId,
+                    replyMessageService.getLocaleText("reply.admin.users.list"),
+                    keyboardService.getInlineKeyboardLineByLine(userService.getAllRegisteredUsers()));
         }
         //remove user from list of registered users
         List<String> listOfUsers = userService.getAllRegisteredUsers();
         for (String userName: listOfUsers){
             if (callbackData.equals(userName)){
-                List<String> listOfButtons = List
-                        .of("List of users", "Return to ADMIN service");
-                List<String> listOfBQueries = List.of(Queries.LISTOFUSERS.getValue(), Queries.ADMINSERVICE.getValue());
+                List<String> listOfButtons =
+                        List.of("List of users",
+                                "Return to ADMIN service");
+                List<String> listOfBQueries =
+                        List.of(StaticQueries.LISTOFUSERS.getValue(),
+                                StaticQueries.ADMINSERVICE.getValue());
 
                 userService.deleteRegisterUserByName(callbackData);
                 //it removes user from his NOT only db but from his access completely
@@ -90,11 +103,10 @@ public class AdminCallbackQuery implements CallbackQueryHandler {
 
                 log.info("User {} was deleted from DB", userName);
 
-                reply = new SendMessage();
-                reply.setChatId(chatId);
-                reply.setText(replyMessageService.getLocaleText("reply.admin.remove.user"));
-                reply.setParseMode("HTML");
-                reply.setReplyMarkup(keyboardService.getInlineKeyboard(listOfButtons,listOfBQueries));
+                reply = replyMessageService.getReplyMessage(
+                        chatId,
+                        replyMessageService.getLocaleText("reply.admin.remove.user"),
+                        keyboardService.getInlineKeyboardButtonsAndQueries(listOfButtons,listOfBQueries));
                 break;
             }
         }
@@ -104,13 +116,13 @@ public class AdminCallbackQuery implements CallbackQueryHandler {
     @Override
     public List<String> getHandlerQueryType() {
         //merge two lists to remove user from list
-        List<String> listOfQueries = userService.getAllRegisteredUsers();
-        listOfQueries.addAll(
-                List.of(Queries.ADMIN.getValue(),
-                        Queries.ADMINSERVICE.getValue(),
-                        Queries.ADDUSER.getValue(),
-                        Queries.LISTOFUSERS.getValue()));
+        List<String> listOfQueriesRegisterUsers = userService.getAllRegisteredUsers();
+        List<String> listOfQueries = List.of(StaticQueries.ADMIN.getValue(),
+                StaticQueries.ADMINSERVICE.getValue(),
+                StaticQueries.ADDUSER.getValue(),
+                StaticQueries.LISTOFUSERS.getValue());
 
-        return listOfQueries;
+        return callbackQueriesService
+                .mergeTwoListOfQueries(listOfQueriesRegisterUsers, listOfQueries);
     }
 }

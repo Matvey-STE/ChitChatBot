@@ -10,7 +10,7 @@ import java.util.List;
 @Component
 @Log4j2
 public class KeyboardService {
-    public InlineKeyboardMarkup getInlineKeyboard(List<String> listOfButtons, List<String> listOfQueries){
+    public InlineKeyboardMarkup getInlineKeyboardButtonsAndQueries(List<String> listOfButtons, List<String> listOfQueries){
         InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
         if (listOfButtons.size() != listOfQueries.size()){
             log.error("The lists size of Buttons and Queries is not equal!");
@@ -26,8 +26,7 @@ public class KeyboardService {
         inlineKeyboardMarkup.setKeyboard(buttons);
         return inlineKeyboardMarkup;
     }
-    //todo try to remove duplicated code
-    public InlineKeyboardMarkup getInlineKeyboard(List<String> userNames){
+    public InlineKeyboardMarkup getInlineKeyboardLineByLine(List<String> userNames){
         InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
         List<List<InlineKeyboardButton>> usersList = new ArrayList<>();
         for (String userName : userNames) {
@@ -47,7 +46,7 @@ public class KeyboardService {
         return inlineKeyboardMarkup;
     }
     //for create inline buttons 5 in row max
-    public InlineKeyboardMarkup getInlineKeyboardForButtons(Integer amountOfButtons, String className){
+    public InlineKeyboardMarkup getInlineKeyboardNumberButtons(Integer amountOfButtons, String className){
         int amountOfRows = amountOfButtons/5 + 1;
         //remainder of division
         int remainder = amountOfButtons%5;
@@ -84,12 +83,13 @@ public class KeyboardService {
     }
     public InlineKeyboardMarkup mergeTwoInlineKeyboards(InlineKeyboardMarkup inlineKeyboardMarkupMain,
                                                         InlineKeyboardMarkup inlineKeyboardMarkupAddition){
-        InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
         var keyboardMain = inlineKeyboardMarkupMain.getKeyboard();
         var keyboardAddition = inlineKeyboardMarkupAddition.getKeyboard();
 
         List<List<InlineKeyboardButton>> mergedKeyboard = new ArrayList<>(keyboardMain);
         mergedKeyboard.addAll(keyboardAddition);
+
+        InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
         inlineKeyboardMarkup.setKeyboard(mergedKeyboard);
         return inlineKeyboardMarkup;
     }

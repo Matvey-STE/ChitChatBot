@@ -1,6 +1,6 @@
 package com.matveyvs.chitchatbot.enums;
 
-public enum Queries {
+public enum StaticQueries {
 
     ADMIN ("admin"),
     USER ("user"),
@@ -17,7 +17,7 @@ public enum Queries {
 
     private final String value;
 
-    Queries(String value) {
+    StaticQueries(String value) {
         this.value = value;
     }
     public String getValue() {

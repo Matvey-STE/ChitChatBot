@@ -2,7 +2,7 @@ package com.matveyvs.chitchatbot.botapi.callbackquery.admin;
 
 import com.matveyvs.chitchatbot.botapi.callbackquery.CallbackQueryHandler;
 import com.matveyvs.chitchatbot.entity.UserEntity;
-import com.matveyvs.chitchatbot.enums.Queries;
+import com.matveyvs.chitchatbot.enums.StaticQueries;
 import com.matveyvs.chitchatbot.service.KeyboardService;
 import com.matveyvs.chitchatbot.service.ReplyMessageService;
 import com.matveyvs.chitchatbot.service.UserService;
@@ -31,32 +31,33 @@ public class UserCallbackQuery implements CallbackQueryHandler {
         Long chatId = callbackQuery.getMessage().getChatId();
         String callbackData = callbackQuery.getData();
         UserEntity userEntity = userService.getUserById(chatId);
-        reply = replyMessageService
-                    .sendAnswerCallbackQuery("You unregistered user please ask ADMIN",true, callbackQuery);
+        reply = replyMessageService.getAnswerCallbackQuery(
+                "You unregistered user please ask ADMIN",
+                true,
+                callbackQuery);
 
-        if (callbackData.equals(Queries.USER.getValue()) && userEntity.isUserAccess()){
-            List<String> listOfButtons = List.of("Best Definition TASK","Return to START");
-            List<String> listOfBQueries = List.of(Queries.BESTDEFINITIONTASK.getValue(),Queries.START.getValue());
-            reply = replyMessageService
-                    .getReplyMessage(chatId, replyMessageService.getLocaleText("reply.user.message"),
-                            keyboardService.getInlineKeyboard(listOfButtons,listOfBQueries));
-            log.info("Delete message callbackData user");
-            replyMessageService.deleteMessage(chatId, callBackMessageId);
-        }
-        if (callbackData.equals(Queries.BESTDEFINITIONTASK.getValue()) && userEntity.isUserAccess()){
-            List<String> listOfButtons = List.of("Best Definition TASK","Return to START");
-            List<String> listOfBQueries = List.of(Queries.BESTDEFINITIONTASK.getValue(),Queries.START.getValue());
-            reply = replyMessageService
-                    .getReplyMessage(chatId,
-                            "reply.user.message",
-                            keyboardService.getInlineKeyboard(listOfButtons,listOfBQueries));
-            replyMessageService.deleteMessage(chatId, callBackMessageId);
-        }
+        if (callbackData.equals(StaticQueries.USER.getValue()) && userEntity.isUserAccess()){
+            List<String> listOfButtons =
+                    List.of("Best Definition TASK",
+                            "Return to START");
+            List<String> listOfBQueries =
+                    List.of(StaticQueries.BESTDEFINITIONTASK.getValue(),
+                            StaticQueries.START.getValue());
 
+            reply = replyMessageService.getReplyMessage(
+                            chatId,
+                            replyMessageService.getLocaleText("reply.user.message"),
+                            keyboardService.getInlineKeyboardButtonsAndQueries(listOfButtons,listOfBQueries));
+
+            log.info("Delete message from {} where {}", this.getClass().getSimpleName(), StaticQueries.USER);
+            replyMessageService.deleteMessage(chatId, callBackMessageId);
+
+            userService.saveConditionBestDefinition(chatId, 5);
+        }
         return reply;
     }
     @Override
     public List<String> getHandlerQueryType() {
-        return List.of(Queries.USER.getValue());
+        return List.of(StaticQueries.USER.getValue());
     }
 }

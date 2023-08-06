@@ -2,7 +2,7 @@ package com.matveyvs.chitchatbot.botapi.handlers;
 
 import com.matveyvs.chitchatbot.enums.BotState;
 import com.matveyvs.chitchatbot.entity.UserEntity;
-import com.matveyvs.chitchatbot.enums.Queries;
+import com.matveyvs.chitchatbot.enums.StaticQueries;
 import com.matveyvs.chitchatbot.service.KeyboardService;
 import com.matveyvs.chitchatbot.service.ReplyMessageService;
 import com.matveyvs.chitchatbot.service.UserService;
@@ -38,12 +38,12 @@ public class AdminCommandHandler implements InputMessageHandler{
                             "Show list of USERS",
                             "Return to ADMIN service");
             List<String> listOfBQueries =
-                    List.of(Queries.ADDUSER.getValue(),
-                            Queries.LISTOFUSERS.getValue(),
-                            Queries.ADMINSERVICE.getValue());
+                    List.of(StaticQueries.ADDUSER.getValue(),
+                            StaticQueries.LISTOFUSERS.getValue(),
+                            StaticQueries.ADMINSERVICE.getValue());
             reply = replyMessageService
                     .getReplyMessage(chatId, replyMessageService.getLocaleText("admin.successful.adduser.message"),
-                            keyboardService.getInlineKeyboard(listOfButtons,listOfBQueries));
+                            keyboardService.getInlineKeyboardButtonsAndQueries(listOfButtons,listOfBQueries));
 
             //todo make sure that it works for many users
             replyMessageService.deleteMessage(chatId, messageId);

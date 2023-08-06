@@ -1,8 +1,6 @@
 package com.matveyvs.chitchatbot.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -26,6 +24,8 @@ public class UserEntity extends AbstractClassEntity{
     private boolean userAccess;
     @Column(name = "state_id")
     private Integer stateId;
+    @OneToOne(cascade = CascadeType.ALL)
+    private UserTaskCondition userTaskCondition;
 
 
     @Override
