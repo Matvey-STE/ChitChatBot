@@ -18,24 +18,25 @@ import java.util.List;
 @Log4j2
 @Component
 public class BestDefinitionCallBackQuery implements CallbackQueryHandler {
+    //todo for test reason should moved to task service
+    private final WebHookBotService webHookBotService;
     private final CallbackQueriesService callbackQueriesService;
     private final UserService userService;
     private final KeyboardService keyboardService;
-    private final UpdateDBService updateDBService;
     private List<String> callBackQueriesList = new ArrayList<>();
     private final BestDefinitionService bestDefinitionService;
     private final ReplyMessageService replyMessageService;
 
-    public BestDefinitionCallBackQuery(CallbackQueriesService callbackQueriesService,
+    public BestDefinitionCallBackQuery(WebHookBotService webHookBotService,
+                                       CallbackQueriesService callbackQueriesService,
                                        UserService userService,
                                        KeyboardService keyboardService,
-                                       UpdateDBService updateDBService,
                                        BestDefinitionService bestDefinitionService,
                                        ReplyMessageService replyMessageService) {
+        this.webHookBotService = webHookBotService;
         this.callbackQueriesService = callbackQueriesService;
         this.userService = userService;
         this.keyboardService = keyboardService;
-        this.updateDBService = updateDBService;
         this.bestDefinitionService = bestDefinitionService;
         this.replyMessageService = replyMessageService;
     }
@@ -49,13 +50,17 @@ public class BestDefinitionCallBackQuery implements CallbackQueryHandler {
         String callbackData = callbackQuery.getData();
 //        use it for queries creation and if class changed
         String className = this.getClass().getSimpleName();
+
         int taskCondition = userService.getUserTaskConditionBestDefinition(chatId);
-        if (callbackData.equals(StaticQueries.BESTDEFINITIONTASK.getValue()) && taskCondition != 0){
+
+        //todo create id automatically through callbackquery
+        int minValueOfTaskId = bestDefinitionService.getMinIdForDayTaskById(2);
+
+        if (callbackData.equals(StaticQueries.BESTDEFINITIONTASK.getValue()) && taskCondition >= minValueOfTaskId){
             //attempt to connect to DB
             BestDefinition bestDefinition = bestDefinitionService.findBestDefinitionTaskById(1);
             if (bestDefinition == null){
                 log.error("There is no objects from DB, updated from USER!");
-                updateDBService.updateAllRepository();
                 List<String> listOfButtons =
                         List.of("Return to USER");
                 List<String> listOfBQueries =
@@ -68,7 +73,6 @@ public class BestDefinitionCallBackQuery implements CallbackQueryHandler {
                 replyMessageService.deleteMessage(chatId,callBackMessageId);
             } else {
                 bestDefinition = bestDefinitionService.findBestDefinitionTaskById(taskCondition);
-                System.out.println(bestDefinition);
                 String wordOfTask = bestDefinition.getTaskWord();
                 List<String> listOfAnswers = bestDefinition.getListOfAnswers();
                 callBackQueriesList = createButtonQueries(className, listOfAnswers.size());
@@ -77,8 +81,10 @@ public class BestDefinitionCallBackQuery implements CallbackQueryHandler {
                         chatId,
                         createMessageTaskConstructor(wordOfTask, listOfAnswers),
                         createTaskMessageWithButtons(listOfAnswers));
+
+                replyMessageService.deleteMessage(chatId,callBackMessageId);
             }
-        } else if (callbackData.equals(StaticQueries.BESTDEFINITIONTASK.getValue()) && taskCondition == 0){
+        } else if (callbackData.equals(StaticQueries.BESTDEFINITIONTASK.getValue())){
             List<String> listOfButtons =
                     List.of("Return to START");
             List<String> listOfBQueries =
@@ -89,11 +95,19 @@ public class BestDefinitionCallBackQuery implements CallbackQueryHandler {
                     replyMessageService.getLocaleText("reply.best.definition.done"),
                     keyboardService.getInlineKeyboardButtonsAndQueries(listOfButtons,listOfBQueries));
 
+            log.info("Delete previous message when task finished");
+            replyMessageService.deleteMessage(chatId, callBackMessageId);
         }
         if (callbackData.contains(className)){
             int rightButton = bestDefinitionService.getIndexOfRightAnswer(taskCondition);
-            System.out.println(rightButton);
+            String rightAnswer = bestDefinitionService.getRightAnswerById(taskCondition).toUpperCase();
+            String taskWord = bestDefinitionService.getTaskWordById(taskCondition).toUpperCase();
             if (callbackData.contains(String.valueOf(rightButton))){
+
+                String messageToAnswer = createRightAnswerMessage(taskWord,rightAnswer);
+
+                webHookBotService.editMessage(chatId, callBackMessageId, messageToAnswer);
+
                 List<String> buttons= List.of("Continue");
                 List<String> listOfQueries = List.of(StaticQueries.BESTDEFINITIONTASK.getValue());
 
@@ -102,11 +116,8 @@ public class BestDefinitionCallBackQuery implements CallbackQueryHandler {
                         replyMessageService.getLocaleText("reply.right.best.definition.answer"),
                         keyboardService.getInlineKeyboardButtonsAndQueries(buttons,listOfQueries));
 
-                log.info("Delete message before creation class {} ",this.getClass().getSimpleName());
-
                 taskCondition--;
                 userService.saveConditionBestDefinition(chatId, taskCondition);
-                replyMessageService.deleteMessage(chatId,callBackMessageId);
             } else {
                 reply = replyMessageService.getAnswerCallbackQuery("Wrong answer",true, callbackQuery);
             }
@@ -118,8 +129,7 @@ public class BestDefinitionCallBackQuery implements CallbackQueryHandler {
     public List<String> getHandlerQueryType() {
         List<String> listOfQueries = new ArrayList<>(callBackQueriesList);
         List<String> queries = List.of(StaticQueries.BESTDEFINITIONTASK.getValue());
-        List<String> mergedTwoListsQueries = callbackQueriesService.mergeTwoListOfQueries(listOfQueries, queries);
-        return mergedTwoListsQueries;
+        return callbackQueriesService.mergeTwoListOfQueries(listOfQueries, queries);
     }
     private String createMessageTaskConstructor(String word, List<String> listOfAnswers){
         StringBuilder builder = new StringBuilder("<b>Testing message</b>\n" +
@@ -144,7 +154,6 @@ public class BestDefinitionCallBackQuery implements CallbackQueryHandler {
     }
     private InlineKeyboardMarkup createTaskMessageWithButtons(List<String> listOfAnswers){
         int listSize = listOfAnswers.size();
-
         int amountOfRows = listSize/5 + 1;
         //remainder of division
         int remainder = listSize%5;
@@ -180,5 +189,9 @@ public class BestDefinitionCallBackQuery implements CallbackQueryHandler {
         inlineKeyboardMarkup.setKeyboard(rows);
         listOfAnswers.clear();
         return inlineKeyboardMarkup;
+    }
+    private String createRightAnswerMessage(String word, String rightAnswer){
+        return  "The right answer for the word <b> " + word.toUpperCase() +
+                " is\n\n" + rightAnswer.toUpperCase() + "</b>";
     }
 }
