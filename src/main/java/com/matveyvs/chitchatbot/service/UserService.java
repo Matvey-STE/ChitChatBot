@@ -1,11 +1,11 @@
 package com.matveyvs.chitchatbot.service;
 
 import com.matveyvs.chitchatbot.entity.UserTaskCondition;
-import com.matveyvs.chitchatbot.entity.repository.UserTaskConditionRepository;
+import com.matveyvs.chitchatbot.repository.UserTaskConditionRepository;
 import com.matveyvs.chitchatbot.entity.RegisteredUser;
 import com.matveyvs.chitchatbot.entity.UserEntity;
-import com.matveyvs.chitchatbot.entity.repository.RegisteredUsersRepository;
-import com.matveyvs.chitchatbot.entity.repository.UserEntityRepository;
+import com.matveyvs.chitchatbot.repository.RegisteredUsersRepository;
+import com.matveyvs.chitchatbot.repository.UserEntityRepository;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
