@@ -1,7 +1,7 @@
 package com.matveyvs.chitchatbot.botapi.callbackquery.admin;
 
 import com.matveyvs.chitchatbot.botapi.callbackquery.CallbackQueryHandler;
-import com.matveyvs.chitchatbot.entity.repository.TaskSetsForDayRapository;
+import com.matveyvs.chitchatbot.repository.TaskSetsForDayRepository;
 import com.matveyvs.chitchatbot.enums.StaticQueries;
 import com.matveyvs.chitchatbot.service.CallbackQueriesService;
 import com.matveyvs.chitchatbot.service.KeyboardService;
@@ -19,18 +19,18 @@ import java.util.List;
 @Component
 public class UpdateCallbackQuery implements CallbackQueryHandler {
     private final CallbackQueriesService callbackQueriesService;
-    private final TaskSetsForDayRapository taskSetsForDayRapository;
+    private final TaskSetsForDayRepository taskSetsForDayRepository;
     private final KeyboardService keyboardService;
     private final ReplyMessageService replyMessageService;
     private final UpdateDBService updateDBService;
 
     public UpdateCallbackQuery(CallbackQueriesService callbackQueriesService,
-                               TaskSetsForDayRapository taskSetsForDayRapository,
+                               TaskSetsForDayRepository taskSetsForDayRepository,
                                KeyboardService keyboardService,
                                ReplyMessageService replyMessageService,
                                UpdateDBService updateDBService) {
         this.callbackQueriesService = callbackQueriesService;
-        this.taskSetsForDayRapository = taskSetsForDayRapository;
+        this.taskSetsForDayRepository = taskSetsForDayRepository;
         this.keyboardService = keyboardService;
         this.replyMessageService = replyMessageService;
         this.updateDBService = updateDBService;
@@ -45,7 +45,7 @@ public class UpdateCallbackQuery implements CallbackQueryHandler {
         if (callbackData.equals(StaticQueries.UPDATEDATA.getValue())){
             updateDBService.updateAllRepository();
 
-            Integer amountOfTypesTasks = taskSetsForDayRapository.countAllBy();
+            Integer amountOfTypesTasks = taskSetsForDayRepository.countAllBy();
 
             List<String> listOfButtons = List
                     .of("Return to ADMIN SERVICE");
@@ -89,7 +89,7 @@ public class UpdateCallbackQuery implements CallbackQueryHandler {
     }
     @Override
     public List<String> getHandlerQueryType() {
-        Integer amountOfTypesTasks = taskSetsForDayRapository.countAllBy();
+        Integer amountOfTypesTasks = taskSetsForDayRepository.countAllBy();
         List<String> value = List.of(StaticQueries.UPDATEDATA.getValue());
         List<String> listOfQueries = callbackQueriesService.createListOfQueries(amountOfTypesTasks, this.getClass().getSimpleName());
 

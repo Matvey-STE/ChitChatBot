@@ -2,7 +2,7 @@ package com.matveyvs.chitchatbot.service;
 
 import com.matveyvs.chitchatbot.entity.BestDefinition;
 import com.matveyvs.chitchatbot.entity.TaskSetsForDay;
-import com.matveyvs.chitchatbot.entity.repository.TaskSetsForDayRapository;
+import com.matveyvs.chitchatbot.repository.TaskSetsForDayRepository;
 import com.matveyvs.chitchatbot.enums.SheetNames;
 import com.matveyvs.chitchatbot.service.taskservices.BestDefinitionService;
 import lombok.extern.log4j.Log4j2;
@@ -13,17 +13,16 @@ import java.util.List;
 @Log4j2
 @Component
 public class UpdateDBService {
-    private final TaskSetsForDayRapository taskSetsForDayRapository;
+    private final TaskSetsForDayRepository taskSetsForDayRepository;
     private final GoogleSheetsService googleSheetsService;
     private final BestDefinitionService bestDefinitionService;
 
-    public UpdateDBService(TaskSetsForDayRapository taskSetsForDayRapository, GoogleSheetsService googleSheetsService, BestDefinitionService bestDefinitionService) {
-        this.taskSetsForDayRapository = taskSetsForDayRapository;
+    public UpdateDBService(TaskSetsForDayRepository taskSetsForDayRepository, GoogleSheetsService googleSheetsService, BestDefinitionService bestDefinitionService) {
+        this.taskSetsForDayRepository = taskSetsForDayRepository;
         this.googleSheetsService = googleSheetsService;
         this.bestDefinitionService = bestDefinitionService;
     }
-
-    private void updateBestDefinitionGoogleSheet(){
+    public void updateBestDefinitionGoogleSheet(){
         List<List<String>> lineGoogleSheet =
                 googleSheetsService.getLineGoogleSheet(SheetNames.BEST_DEFINITION.getValue());
         List<BestDefinition> bestDefinitionList = new ArrayList<>();
@@ -47,9 +46,11 @@ public class UpdateDBService {
         }
         TaskSetsForDay taskSetsForDay = new TaskSetsForDay();
         taskSetsForDay.setBestDefinitionList(bestDefinitionList);
-        taskSetsForDayRapository.save(taskSetsForDay);
+        taskSetsForDayRepository.save(taskSetsForDay);
     }
     public void updateAllRepository(){
+        log.info("remove all data from best definition repository");
+        bestDefinitionService.deleteAllBestDefinition();
         updateBestDefinitionGoogleSheet();
     }
     private int indexOfRightAnswer(String rightAnswer, List<String> listOfAnswers){
