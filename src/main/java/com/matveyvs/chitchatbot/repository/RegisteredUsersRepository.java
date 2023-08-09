@@ -1,4 +1,4 @@
-package com.matveyvs.chitchatbot.entity.repository;
+package com.matveyvs.chitchatbot.repository;
 
 import com.matveyvs.chitchatbot.entity.RegisteredUser;
 import org.springframework.data.jpa.repository.JpaRepository;
