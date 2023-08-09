@@ -66,9 +66,9 @@ public class StartCallbackQuery implements CallbackQueryHandler {
             reply = replyMessageService
                     .getReplyMessage(chatId, replyMessageService.getLocaleText("reply.access.ask"),
                             keyboardService.getInlineKeyboardButtonsAndQueries(listOfButtons,listOfBQueries));
+            log.info("Delete message after using {}", this.getClass().getSimpleName());
+            replyMessageService.deleteMessage(chatId,callBackMessageId);
         }
-        log.info("Delete message after using {}", this.getClass().getSimpleName());
-        replyMessageService.deleteMessage(chatId,callBackMessageId);
         return reply;
     }
     @Override
