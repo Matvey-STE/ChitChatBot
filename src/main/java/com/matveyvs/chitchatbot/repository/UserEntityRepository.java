@@ -1,4 +1,4 @@
-package com.matveyvs.chitchatbot.entity.repository;
+package com.matveyvs.chitchatbot.repository;
 
 
 import com.matveyvs.chitchatbot.entity.UserEntity;
@@ -39,11 +39,4 @@ public interface UserEntityRepository extends JpaRepository<UserEntity, Long> {
             ")", nativeQuery = true)
     int getUserTaskConditionBestDefinition(Long chatId);
 
-
-    @Query(value = "SELECT STATE_ID FROM USERS WHERE CHAT_ID = :chatId",nativeQuery = true)
-    int getUserBotStateById(Long chatId);
-    @Transactional
-    @Modifying
-    @Query(value = "UPDATE user_entity SET BOT_STATE = :botStateInteger WHERE CHAT_ID = :chatId",nativeQuery = true)
-    void setUserBotStateById(Long chatId, Integer botStateInteger);
 }
