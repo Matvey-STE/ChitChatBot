@@ -15,7 +15,7 @@ import java.util.List;
 @Entity
 @Table(name = "task_types")
 public class TaskSetsForDay extends AbstractClassEntity{
-    @OneToMany(targetEntity = BestDefinition.class)
+    @OneToMany(targetEntity = BestDefinition.class, cascade = CascadeType.ALL, orphanRemoval=true)
     @JoinColumn(name = "task_set_id", referencedColumnName = "id")
     List<BestDefinition> bestDefinitionList;
 }

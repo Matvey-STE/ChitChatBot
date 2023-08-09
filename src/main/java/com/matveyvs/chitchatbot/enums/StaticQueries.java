@@ -12,8 +12,8 @@ public enum StaticQueries {
     PASSWORD ("password"),
     LISTOFUSERS ("listofusers"),
     BESTDEFINITIONTASK ("bestdefinitiontask"),
-    UPDATEDATA ("updatedata");
-
+    UPDATEDATA ("updatedata"),
+    TASKTYPESFORDAY ("tasktypeforday");
 
     private final String value;
 
