@@ -19,7 +19,9 @@ public class UserCallbackQuery implements CallbackQueryHandler {
     private final ReplyMessageService replyMessageService;
     private final UserService userService;
 
-    public UserCallbackQuery(KeyboardService keyboardService, UserService userService, ReplyMessageService replyMessageService) {
+    public UserCallbackQuery(KeyboardService keyboardService,
+                             UserService userService,
+                             ReplyMessageService replyMessageService) {
         this.keyboardService = keyboardService;
         this.userService = userService;
         this.replyMessageService = replyMessageService;
@@ -37,11 +39,12 @@ public class UserCallbackQuery implements CallbackQueryHandler {
                 callbackQuery);
 
         if (callbackData.equals(StaticQueries.USER.getValue()) && userEntity.isUserAccess()){
+
             List<String> listOfButtons =
-                    List.of("Best Definition TASK",
+                    List.of("List of possible days",
                             "Return to START");
             List<String> listOfBQueries =
-                    List.of(StaticQueries.BESTDEFINITIONTASK.getValue(),
+                    List.of(StaticQueries.TASKTYPESFORDAY.getValue(),
                             StaticQueries.START.getValue());
 
             reply = replyMessageService.getReplyMessage(
@@ -51,13 +54,12 @@ public class UserCallbackQuery implements CallbackQueryHandler {
 
             log.info("Delete message from {} where {}", this.getClass().getSimpleName(), StaticQueries.USER);
             replyMessageService.deleteMessage(chatId, callBackMessageId);
-
-            userService.saveConditionBestDefinition(chatId, 5);
         }
         return reply;
     }
     @Override
     public List<String> getHandlerQueryType() {
-        return List.of(StaticQueries.USER.getValue());
+        return
+                List.of(StaticQueries.USER.getValue());
     }
 }
