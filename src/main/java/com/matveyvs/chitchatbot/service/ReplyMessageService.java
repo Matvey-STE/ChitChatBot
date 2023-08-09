@@ -1,5 +1,6 @@
 package com.matveyvs.chitchatbot.service;
 
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.methods.AnswerCallbackQuery;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -9,14 +10,11 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMa
 import java.util.Locale;
 
 @Service
+@AllArgsConstructor
 public class ReplyMessageService {
     private final LocaleMessageService localeMessageService;
     private final WebHookBotService webHookBotService;
 
-    public ReplyMessageService(LocaleMessageService localeMessageService, WebHookBotService webHookBotService) {
-        this.localeMessageService = localeMessageService;
-        this.webHookBotService = webHookBotService;
-    }
     public String getLocaleText(String replyMessage){
         return localeMessageService.getMessage(replyMessage);
     }

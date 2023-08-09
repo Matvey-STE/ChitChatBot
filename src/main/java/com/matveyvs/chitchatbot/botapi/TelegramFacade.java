@@ -6,6 +6,7 @@ import com.matveyvs.chitchatbot.entity.RegisteredUser;
 import com.matveyvs.chitchatbot.entity.UserEntity;
 import com.matveyvs.chitchatbot.enums.StaticQueries;
 import com.matveyvs.chitchatbot.service.UserService;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
@@ -16,16 +17,11 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 
 @Slf4j
 @Component
+@AllArgsConstructor
 public class TelegramFacade {
     private final UserService userService;
     private final BotStateContext botStateContext;
     private final CallbackQueryFacade callbackQueryFacade;
-
-    public TelegramFacade(UserService userService, BotStateContext botStateContext, CallbackQueryFacade callbackQueryFacade) {
-        this.userService = userService;
-        this.botStateContext = botStateContext;
-        this.callbackQueryFacade = callbackQueryFacade;
-    }
 
     public BotApiMethod<?> handleUpdate (Update update){
         BotApiMethod<?> replyMessage = null;

@@ -7,6 +7,7 @@ import com.matveyvs.chitchatbot.service.CallbackQueriesService;
 import com.matveyvs.chitchatbot.service.KeyboardService;
 import com.matveyvs.chitchatbot.service.ReplyMessageService;
 import com.matveyvs.chitchatbot.service.UpdateDBService;
+import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
@@ -17,6 +18,7 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMa
 import java.util.List;
 @Log4j2
 @Component
+@AllArgsConstructor
 public class UpdateCallbackQuery implements CallbackQueryHandler {
     private final CallbackQueriesService callbackQueriesService;
     private final TaskSetsForDayRepository taskSetsForDayRepository;
@@ -24,17 +26,6 @@ public class UpdateCallbackQuery implements CallbackQueryHandler {
     private final ReplyMessageService replyMessageService;
     private final UpdateDBService updateDBService;
 
-    public UpdateCallbackQuery(CallbackQueriesService callbackQueriesService,
-                               TaskSetsForDayRepository taskSetsForDayRepository,
-                               KeyboardService keyboardService,
-                               ReplyMessageService replyMessageService,
-                               UpdateDBService updateDBService) {
-        this.callbackQueriesService = callbackQueriesService;
-        this.taskSetsForDayRepository = taskSetsForDayRepository;
-        this.keyboardService = keyboardService;
-        this.replyMessageService = replyMessageService;
-        this.updateDBService = updateDBService;
-    }
     @Override
     public BotApiMethod<?> handleCallbackQuery(CallbackQuery callbackQuery) {
         SendMessage reply = null;

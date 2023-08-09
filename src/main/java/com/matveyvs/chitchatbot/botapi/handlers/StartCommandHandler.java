@@ -7,6 +7,7 @@ import com.matveyvs.chitchatbot.enums.StaticQueries;
 import com.matveyvs.chitchatbot.service.KeyboardService;
 import com.matveyvs.chitchatbot.service.ReplyMessageService;
 import com.matveyvs.chitchatbot.service.UserService;
+import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -16,16 +17,12 @@ import java.util.List;
 
 @Log4j2
 @Component
+@AllArgsConstructor
 public class StartCommandHandler implements InputMessageHandler{
     private final KeyboardService keyboardService;
     private final UserService userService;
     private final ReplyMessageService replyMessageService;
 
-    public StartCommandHandler(KeyboardService keyboardService, UserService userService, ReplyMessageService replyMessageService) {
-        this.keyboardService = keyboardService;
-        this.userService = userService;
-        this.replyMessageService = replyMessageService;
-    }
     @Override
     public SendMessage handle(Message message) {
         SendMessage reply;

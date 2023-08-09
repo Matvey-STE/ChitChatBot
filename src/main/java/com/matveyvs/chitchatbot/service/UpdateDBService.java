@@ -5,6 +5,7 @@ import com.matveyvs.chitchatbot.entity.TaskSetsForDay;
 import com.matveyvs.chitchatbot.repository.TaskSetsForDayRepository;
 import com.matveyvs.chitchatbot.enums.SheetNames;
 import com.matveyvs.chitchatbot.service.taskservices.BestDefinitionService;
+import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Component;
 import java.util.ArrayList;
@@ -12,16 +13,12 @@ import java.util.Collections;
 import java.util.List;
 @Log4j2
 @Component
+@AllArgsConstructor
 public class UpdateDBService {
     private final TaskSetsForDayRepository taskSetsForDayRepository;
     private final GoogleSheetsService googleSheetsService;
     private final BestDefinitionService bestDefinitionService;
 
-    public UpdateDBService(TaskSetsForDayRepository taskSetsForDayRepository, GoogleSheetsService googleSheetsService, BestDefinitionService bestDefinitionService) {
-        this.taskSetsForDayRepository = taskSetsForDayRepository;
-        this.googleSheetsService = googleSheetsService;
-        this.bestDefinitionService = bestDefinitionService;
-    }
     public void updateBestDefinitionGoogleSheet(){
         List<List<String>> lineGoogleSheet =
                 googleSheetsService.getLineGoogleSheet(SheetNames.BEST_DEFINITION.getValue());

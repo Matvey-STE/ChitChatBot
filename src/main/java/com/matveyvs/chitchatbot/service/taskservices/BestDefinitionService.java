@@ -3,22 +3,18 @@ package com.matveyvs.chitchatbot.service.taskservices;
 import com.matveyvs.chitchatbot.entity.BestDefinition;
 import com.matveyvs.chitchatbot.repository.BestDefinitionRepository;
 import com.matveyvs.chitchatbot.repository.TaskSetsForDayRepository;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
 
 
 @Component
-
+@AllArgsConstructor
 public class BestDefinitionService {
     private final TaskSetsForDayRepository taskSetsForDayRepository;
     private final BestDefinitionRepository bestDefinitionRepository;
 
-    public BestDefinitionService(TaskSetsForDayRepository taskSetsForDayRepository,
-                                 BestDefinitionRepository bestDefinitionRepository) {
-        this.taskSetsForDayRepository = taskSetsForDayRepository;
-        this.bestDefinitionRepository = bestDefinitionRepository;
-    }
     public void saveBestDefinitionTask(BestDefinition bestDefinition){
         bestDefinitionRepository.save(bestDefinition);
     }

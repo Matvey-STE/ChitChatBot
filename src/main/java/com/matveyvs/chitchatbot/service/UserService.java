@@ -6,23 +6,19 @@ import com.matveyvs.chitchatbot.entity.RegisteredUser;
 import com.matveyvs.chitchatbot.entity.UserEntity;
 import com.matveyvs.chitchatbot.repository.RegisteredUsersRepository;
 import com.matveyvs.chitchatbot.repository.UserEntityRepository;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
 @Component
+@AllArgsConstructor
 public class UserService {
     private final UserTaskConditionRepository userTaskConditionRepository;
     private final RegisteredUsersRepository registeredUsersRepository;
     private final UserEntityRepository userRepository;
-    public UserService(UserTaskConditionRepository userTaskConditionRepository,
-                       RegisteredUsersRepository registeredUsersRepository,
-                       UserEntityRepository userRepository) {
-        this.userTaskConditionRepository = userTaskConditionRepository;
-        this.registeredUsersRepository = registeredUsersRepository;
-        this.userRepository = userRepository;
-    }
+    
     public void saveUser (UserEntity userEntity){
         userRepository.save(userEntity);
     }

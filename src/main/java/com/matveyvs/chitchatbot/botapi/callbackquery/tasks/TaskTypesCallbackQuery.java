@@ -5,6 +5,7 @@ import com.matveyvs.chitchatbot.enums.StaticQueries;
 import com.matveyvs.chitchatbot.repository.TaskSetsForDayRepository;
 import com.matveyvs.chitchatbot.service.KeyboardService;
 import com.matveyvs.chitchatbot.service.ReplyMessageService;
+import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
@@ -15,18 +16,12 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMa
 import java.util.List;
 @Log4j2
 @Component
+@AllArgsConstructor
 public class TaskTypesCallbackQuery implements CallbackQueryHandler {
     private final KeyboardService keyboardService;
     private final TaskSetsForDayRepository taskSetsForDayRepository;
     private final ReplyMessageService replyMessageService;
 
-    public TaskTypesCallbackQuery(KeyboardService keyboardService,
-                                  TaskSetsForDayRepository taskSetsForDayRepository,
-                                  ReplyMessageService replyMessageService) {
-        this.keyboardService = keyboardService;
-        this.taskSetsForDayRepository = taskSetsForDayRepository;
-        this.replyMessageService = replyMessageService;
-    }
     @Override
     public BotApiMethod<?> handleCallbackQuery(CallbackQuery callbackQuery) {
         BotApiMethod<?> reply = null;

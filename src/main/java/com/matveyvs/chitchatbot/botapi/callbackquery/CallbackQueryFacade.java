@@ -1,5 +1,6 @@
 package com.matveyvs.chitchatbot.botapi.callbackquery;
 
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
@@ -7,11 +8,10 @@ import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
 import java.util.List;
 
 @Component
+@AllArgsConstructor
 public class CallbackQueryFacade {
     private final List<CallbackQueryHandler> callbackQueryHandlers;
-    public CallbackQueryFacade(List<CallbackQueryHandler> callbackQueryHandlers) {
-        this.callbackQueryHandlers = callbackQueryHandlers;
-    }
+
     public BotApiMethod<?> processCallBackQuery(CallbackQuery userQuery){
         return getHandlerByCallBackQuery(userQuery.getData()).handleCallbackQuery(userQuery);
     }

@@ -7,6 +7,7 @@ import com.matveyvs.chitchatbot.enums.StaticQueries;
 import com.matveyvs.chitchatbot.service.KeyboardService;
 import com.matveyvs.chitchatbot.service.ReplyMessageService;
 import com.matveyvs.chitchatbot.service.UserService;
+import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -15,16 +16,12 @@ import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
 import java.util.List;
 @Log4j2
 @Component
+@AllArgsConstructor
 public class RegisterCallbackQuery implements CallbackQueryHandler {
     private final UserService userService;
     private final KeyboardService keyboardService;
     private final ReplyMessageService replyMessageService;
 
-    public RegisterCallbackQuery(UserService userService, KeyboardService keyboardService, ReplyMessageService replyMessageService) {
-        this.userService = userService;
-        this.keyboardService = keyboardService;
-        this.replyMessageService = replyMessageService;
-    }
     @Override
     public SendMessage handleCallbackQuery(CallbackQuery callbackQuery) {
         SendMessage reply = null;
