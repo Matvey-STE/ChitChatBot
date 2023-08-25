@@ -1,8 +1,6 @@
-<div style="text-align: center;">
-  <span style="color: blue; font-weight: bold; font-size: larger;">ChitChatBot</span>
-</div>
+# ChitChatBot
 
-Telegram bot that helps English teacher to send tasks to students.
+## Telegram bot that helps English teacher to send tasks to students.
 
 1. Registration part where teacher and students have different access.
    Teacher uses password to get access to it.
